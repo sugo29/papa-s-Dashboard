@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Setu Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #667eea;
+            font-size: 3em;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🔐</div>
+        <h1>PM Setu</h1>
+        <p class="subtitle">Login to access your dashboard</p>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="stateName">State/UTs Name:</label>
+                <select id="stateName" name="stateName" required>
+                    <option value="">Select State/UT</option>
+                    <option value="Assam">Assam</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    <option value="Bihar">Bihar</option>
+                    <option value="Gujarat">Gujarat</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">User Email ID:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> Please change password on 1st login
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+
+    <script>
+        // User credentials database
+        const users = {
+            'assam@dgt.gov.in': { password: 'PMsetu@1234', state: 'Assam' },
+            'up@dgt.gov.in': { password: 'PMsetu@1234', state: 'Uttar Pradesh' },
+            'bihar@dgt.gov.in': { password: 'PMsetu@1234', state: 'Bihar' },
+            'gujarat@dgt.gov.in': { password: 'PMsetu@1234', state: 'Gujarat' }
+        };
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const stateName = document.getElementById('stateName').value;
+            const email = document.getElementById('email').value.toLowerCase();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Validate credentials
+            if (users[email] && users[email].password === password && users[email].state === stateName) {
+                // Store state name in session storage
+                sessionStorage.setItem('userState', stateName);
+                sessionStorage.setItem('userEmail', email);
+                
+                // Redirect to main page
+                window.location.href = 'index.html';
+            } else {
+                errorMessage.textContent = 'Invalid credentials. Please check your State/UT, Email, and Password.';
+                errorMessage.style.display = 'block';
+                
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+
+        // Auto-fill email based on state selection
+        document.getElementById('stateName').addEventListener('change', function() {
+            const state = this.value;
+            const emailInput = document.getElementById('email');
+            
+            const stateEmailMap = {
+                'Assam': 'assam@dgt.gov.in',
+                'Uttar Pradesh': 'up@dgt.gov.in',
+                'Bihar': 'bihar@dgt.gov.in',
+                'Gujarat': 'gujarat@dgt.gov.in'
+            };
+            
+            if (stateEmailMap[state]) {
+                emailInput.value = stateEmailMap[state];
+            }
+        });
+    </script>
+</body>
+</html>
