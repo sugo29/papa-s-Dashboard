@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Setu - ITI Form Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f5ff;
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #4fc3f7;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .state-info {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .state-info i {
+            margin-right: 10px;
+            color: #80deea;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(to bottom, #1a3a8f, #2a5298);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+            overflow-y: auto;
+            z-index: 5;
+        }
+
+        .sidebar h3 {
+            font-size: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar h3 i {
+            color: #80deea;
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 10px;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #e3f2fd;
+            text-decoration: none;
+            padding: 16px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .menu-item a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active a {
+            background-color: rgba(79, 195, 247, 0.2);
+            color: white;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .menu-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content Panel */
+        .content-panel {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: #f8fbff;
+        }
+
+        .panel-title {
+            font-size: 26px;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .panel-title i {
+            color: #2a5298;
+        }
+
+        /* ITI Form Panel */
+        .form-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2a5298;
+            font-size: 17px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #2a5298;
+            outline: none;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(to right, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(42, 82, 152, 0.2);
+        }
+
+        /* Table for View Forms and Logs */
+        .table-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f0f7ff;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            color: #1e3c72;
+            font-weight: 700;
+            border-bottom: 2px solid #e0e0e0;
+            font-size: 16px;
+        }
+
+        td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f9fcff;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-submitted {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .sort-indicator {
+            margin-left: 8px;
+            color: #2a5298;
+            cursor: pointer;
+        }
+
+        /* Logs Panel */
+        .log-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #2a5298;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .log-action {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 17px;
+        }
+
+        .log-date {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .log-details {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Charts Grid Styles */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            padding: 10px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e7ff;
+        }
+
+        .chart-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .table-section {
+            flex: 1;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .chart-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 200px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background-color: #d6e4ff;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 12px;
+        }
+
+        .data-table td {
+            padding: 8px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .status-yes {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .status-no {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .status-not-started {
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .status-submission {
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .status-evaluation {
+            color: #17a2b8;
+            font-weight: 600;
+        }
+
+        .status-rfp {
+            color: #ffc107;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        /* Cluster Report Styles */
+        .cluster-report-container {
+            padding: 20px;
+        }
+
+        .state-selector {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .selector-left {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .selector-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .state-selector label {
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .state-dropdown {
+            width: 300px;
+            padding: 8px 15px;
+            border: 2px solid #d6e4ff;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            cursor: pointer;
+            height: 120px;
+        }
+
+        .state-dropdown option {
+            padding: 8px;
+        }
+
+        .state-dropdown:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        .select-hint {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #217346, #1d6b3a);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: linear-gradient(135deg, #1d6b3a, #165c30);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 115, 70, 0.3);
+        }
+
+        .download-btn i {
+            font-size: 18px;
+        }
+
+        .download-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .cluster-table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .selected-state-header {
+            background: #d6e4ff;
+            padding: 12px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .selected-state-header .label {
+            font-weight: 600;
+            color: #1e3c72;
+        }
+
+        .selected-state-header .value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .cluster-data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cluster-data-table th {
+            background: #d6e4ff;
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            color: #1e3c72;
+            border-bottom: 2px solid #c0d4ff;
+        }
+
+        .cluster-data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e8e8e8;
+            vertical-align: top;
+        }
+
+        .cluster-data-table tr:hover {
+            background-color: #f8faff;
+        }
+
+        .spoke-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .spoke-list li {
+            padding: 4px 0;
+            display: flex;
+            gap: 8px;
+        }
+
+        .spoke-list li .roman {
+            color: #666;
+            min-width: 20px;
+        }
+
+        .no-data-message {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .no-data-message i {
+            font-size: 48px;
+            color: #b0c4de;
+            margin-bottom: 15px;
+        }
+
+        .no-data-message p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* Hide all panels initially */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .menu-items {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            
+            .menu-item a {
+                padding: 12px 15px;
+            }
+            
+            .content-panel {
+                padding: 20px;
+            }
+            
+            .form-container, .table-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-bridge"></i> PM Setu Dashboard</h1>
+            <div class="state-info">
+                <i class="fas fa-map-marker-alt"></i> Currently logged in: <strong>Centre</strong>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <h3><i class="fas fa-tasks"></i> ITI Form Management</h3>
+                <ul class="menu-items">
+                    <li class="menu-item active" data-target="statewise-panel">
+                        <a href="#"><i class="fas fa-map"></i> Statewise Report</a>
+                    </li>
+                    <li class="menu-item" data-target="cluster-panel">
+                        <a href="#"><i class="fas fa-layer-group"></i> Cluster Report</a>
+                    </li>
+                    <li class="menu-item" data-target="view-panel">
+                        <a href="#"><i class="fas fa-eye"></i> View Filled Forms</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Content Panel -->
+            <div class="content-panel">
+                <!-- Statewise Report Panel -->
+                <div id="statewise-panel" class="panel active">
+                    <h2 class="panel-title"><i class="fas fa-map"></i> Statewise Report</h2>
+                    
+                    <div class="charts-grid">
+                        <!-- PM-SETU SPMU Established -->
+                        <div class="chart-card">
+                            <h3 class="chart-title">PM-SETU SPMU Established</h3>
+                            <div class="chart-content">
+                                <div class="table-section">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>State/UT Name</th>
+                                                <th>PM-SETU SPMU Established</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Assam</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>2</td><td>Bihar</td><td class="status-no">No</td></tr>
+                                            <tr><td>3</td><td>Chattisgarh</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>4</td><td>Delhi</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>5</td><td>Gujarat</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>6</td><td>Maharashtra</td><td class="status-no">No</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="chart-section">
+                                    <canvas id="spmuChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Steering Committee Meeting -->
+                        <div class="chart-card">
+                            <h3 class="chart-title">Steering Committee Meeting Conducted</h3>
+                            <div class="chart-content">
+                                <div class="table-section">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>State/UT Name</th>
+                                                <th>Meeting Conducted</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Assam</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>2</td><td>Bihar</td><td class="status-no">No</td></tr>
+                                            <tr><td>3</td><td>Chattisgarh</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>4</td><td>Delhi</td><td class="status-yes">Yes</td></tr>
+                                            <tr><td>5</td><td>Gujarat</td><td class="status-no">No</td></tr>
+                                            <tr><td>6</td><td>Maharashtra</td><td class="status-yes">Yes</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="chart-section">
+                                    <canvas id="meetingChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cluster & ITI Data -->
+                        <div class="chart-card">
+                            <h3 class="chart-title">No. of Clusters Formed & ITIs Taken</h3>
+                            <div class="chart-content">
+                                <div class="table-section">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>State/UT Name</th>
+                                                <th>No. of Cluster Formed</th>
+                                                <th>No. of ITIs Taken</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Assam</td><td>1</td><td>3</td></tr>
+                                            <tr><td>2</td><td>Bihar</td><td>1</td><td>4</td></tr>
+                                            <tr><td>3</td><td>Chattisgarh</td><td>2</td><td>7</td></tr>
+                                            <tr><td>4</td><td>Delhi</td><td>3</td><td>10</td></tr>
+                                            <tr><td>5</td><td>Gujarat</td><td>4</td><td>11</td></tr>
+                                            <tr><td>6</td><td>Maharashtra</td><td>3</td><td>6</td></tr>
+                                            <tr><td>7</td><td>U.P.</td><td>1</td><td>4</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="chart-section">
+                                    <canvas id="clusterChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bid Status -->
+                        <div class="chart-card">
+                            <h3 class="chart-title">Bid Status</h3>
+                            <div class="chart-content">
+                                <div class="table-section">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>S.No</th>
+                                                <th>State/UT Name</th>
+                                                <th>Bid Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>1</td><td>Assam</td><td class="status-not-started">Not Started</td></tr>
+                                            <tr><td>2</td><td>Bihar</td><td class="status-submission">Under Submission</td></tr>
+                                            <tr><td>3</td><td>Chattisgarh</td><td class="status-evaluation">Evaluation Process</td></tr>
+                                            <tr><td>4</td><td>Delhi</td><td class="status-rfp">RFP Preparation</td></tr>
+                                            <tr><td>5</td><td>Maharashtra</td><td class="status-submission">Under Submission</td></tr>
+                                            <tr><td>6</td><td>Gujarat</td><td class="status-completed">Completed</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="chart-section">
+                                    <canvas id="bidChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cluster Report Panel -->
+                <div id="cluster-panel" class="panel">
+                    <h2 class="panel-title"><i class="fas fa-layer-group"></i> Cluster Report</h2>
+                    
+                    <div class="cluster-report-container">
+                        <!-- State Selection -->
+                        <div class="state-selector">
+                            <div class="selector-left">
+                                <label for="stateSelect"><i class="fas fa-map-marker-alt"></i> Select State/UT:</label>
+                                <select id="stateSelect" class="form-control state-dropdown" multiple>
+                                    <option value="gujarat">Gujarat</option>
+                                    <option value="maharashtra">Maharashtra</option>
+                                    <option value="delhi">Delhi</option>
+                                    <option value="assam">Assam</option>
+                                    <option value="bihar">Bihar</option>
+                                    <option value="chattisgarh">Chattisgarh</option>
+                                    <option value="up">Uttar Pradesh</option>
+                                </select>
+                                <span class="select-hint">Hold Ctrl/Cmd to select multiple states</span>
+                            </div>
+                            <div class="selector-right">
+                                <button id="downloadExcel" class="download-btn" title="Download as Excel">
+                                    <i class="fas fa-file-excel"></i> Download Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cluster Report Table -->
+                        <div id="clusterReportTable" class="cluster-table-container" style="display: none;">
+                            <div class="selected-state-header">
+                                <span class="label">Selected States:</span>
+                                <span id="selectedStateName" class="value"></span>
+                            </div>
+                            
+                            <table class="cluster-data-table">
+                                <thead>
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>State/UT</th>
+                                        <th>Cluster</th>
+                                        <th>Hub</th>
+                                        <th>Spoke</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clusterTableBody">
+                                    <!-- Data will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div id="noStateSelected" class="no-data-message">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Please select a State/UT from the dropdown to view the cluster report.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Forms Panel -->
+                <div id="view-panel" class="panel">
+                    <h2 class="panel-title"><i class="fas fa-eye"></i> View Submitted Forms</h2>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Form ID <i class="fas fa-sort sort-indicator" data-sort="id"></i></th>
+                                    <th>Institute Name <i class="fas fa-sort sort-indicator" data-sort="name"></i></th>
+                                    <th>Course Type</th>
+                                    <th>Submission Date <i class="fas fa-sort sort-indicator" data-sort="date"></i></th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ITI-2023-001</td>
+                                    <td>Government ITI, Mumbai</td>
+                                    <td>Engineering</td>
+                                    <td>15-10-2023</td>
+                                    <td><span class="status-badge status-completed">Completed</span></td>
+                                    <td><button class="btn" style="padding: 8px 16px; font-size: 14px;"><i class="fas fa-edit"></i> Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>ITI-2023-002</td>
+                                    <td>Private ITI, Pune</td>
+                                    <td>Vocational</td>
+                                    <td>12-10-2023</td>
+                                    <td><span class="status-badge status-pending">Pending</span></td>
+                                    <td><button class="btn" style="padding: 8px 16px; font-size: 14px;"><i class="fas fa-edit"></i> Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>ITI-2023-003</td>
+                                    <td>Women's ITI, Nagpur</td>
+                                    <td>Non-Engineering</td>
+                                    <td>10-10-2023</td>
+                                    <td><span class="status-badge status-submitted">Submitted</span></td>
+                                    <td><button class="btn" style="padding: 8px 16px; font-size: 14px;"><i class="fas fa-edit"></i> Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td>ITI-2023-004</td>
+                                    <td>Rural ITI, Aurangabad</td>
+                                    <td>Engineering</td>
+                                    <td>05-10-2023</td>
+                                    <td><span class="status-badge status-completed">Completed</span></td>
+                                    <td><button class="btn" style="padding: 8px 16px; font-size: 14px;"><i class="fas fa-edit"></i> Edit</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Activity Log Panel -->
+                <div id="logs-panel" class="panel">
+                    <h2 class="panel-title"><i class="fas fa-history"></i> Form Activity Log</h2>
+                    
+                    <div class="table-container">
+                        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="color: #1e3c72;">Recent Activities</h3>
+                            <div>
+                                <span>Sort by: </span>
+                                <select id="logSort" class="form-control" style="width: auto; display: inline-block; padding: 8px 15px; margin-left: 10px;">
+                                    <option value="date-desc">Date (Newest First)</option>
+                                    <option value="date-asc">Date (Oldest First)</option>
+                                    <option value="action">Action Type</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Edited</div>
+                                <div class="log-date">28 October 2023, 14:32</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-003 was edited by User: Admin_MH001. Changes made to student count field.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">New Form Submitted</div>
+                                <div class="log-date">27 October 2023, 10:15</div>
+                            </div>
+                            <div class="log-details">
+                                New ITI Form ID: ITI-2023-004 created for Rural ITI, Aurangabad with Engineering course type.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Viewed</div>
+                                <div class="log-date">26 October 2023, 16:45</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-001 was accessed by User: Inspector_MH005 for review purposes.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Status Updated</div>
+                                <div class="log-date">25 October 2023, 11:20</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-002 status changed from "Pending" to "Under Review" by User: Admin_MH001.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Generated</div>
+                                <div class="log-date">24 October 2023, 09:30</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-003 generated for Women's ITI, Nagpur with Non-Engineering course type.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation between panels
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const panels = document.querySelectorAll('.panel');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update active menu item
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target panel
+                    panels.forEach(panel => {
+                        panel.classList.remove('active');
+                        if (panel.id === target) {
+                            panel.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Initialize Charts
+            // PM-SETU SPMU Established Pie Chart
+            new Chart(document.getElementById('spmuChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Yes', 'No'],
+                    datasets: [{
+                        data: [4, 2],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+
+            // Steering Committee Meeting Pie Chart
+            new Chart(document.getElementById('meetingChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Yes', 'No'],
+                    datasets: [{
+                        data: [4, 2],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+
+            // Cluster & ITI Bar Chart
+            new Chart(document.getElementById('clusterChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Assam', 'Bihar', 'Chattisgarh', 'Delhi', 'Gujarat', 'Maharashtra', 'U.P.'],
+                    datasets: [
+                        {
+                            label: 'No. of Cluster Formed',
+                            data: [1, 1, 2, 3, 4, 3, 1],
+                            backgroundColor: '#4285f4',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'No. of ITIs Taken',
+                            data: [3, 4, 7, 10, 11, 6, 4],
+                            backgroundColor: '#ea4335',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 10 } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { font: { size: 9 } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+
+            // Bid Status Pie Chart
+            new Chart(document.getElementById('bidChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Not Started', 'Under Submission', 'Evaluation Process', 'RFP Preparation', 'Completed'],
+                    datasets: [{
+                        data: [1, 2, 1, 1, 1],
+                        backgroundColor: ['#6c757d', '#007bff', '#17a2b8', '#ffc107', '#28a745'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 9 } }
+                        }
+                    }
+                }
+            });
+
+            // Cluster Report Data
+            const clusterData = {
+                gujarat: {
+                    name: 'Gujarat',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Ahmedabad',
+                            spokes: ['ITI Gandhinagar', 'ITI Vadodara', 'ITI Surat', 'ITI Rajkot']
+                        },
+                        {
+                            cluster: 'Cluster 2',
+                            hub: 'ITI Bhavnagar',
+                            spokes: ['ITI Jamnagar', 'ITI Junagadh', 'ITI Porbandar']
+                        },
+                        {
+                            cluster: 'Cluster 3',
+                            hub: 'ITI Mehsana',
+                            spokes: ['ITI Patan', 'ITI Palanpur', 'ITI Anand', 'ITI Nadiad']
+                        }
+                    ]
+                },
+                maharashtra: {
+                    name: 'Maharashtra',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Mumbai',
+                            spokes: ['ITI Thane', 'ITI Navi Mumbai', 'ITI Kalyan', 'ITI Panvel']
+                        },
+                        {
+                            cluster: 'Cluster 2',
+                            hub: 'ITI Pune',
+                            spokes: ['ITI Pimpri', 'ITI Chinchwad', 'ITI Satara']
+                        },
+                        {
+                            cluster: 'Cluster 3',
+                            hub: 'ITI Nagpur',
+                            spokes: ['ITI Amravati', 'ITI Wardha', 'ITI Chandrapur', 'ITI Gondia']
+                        }
+                    ]
+                },
+                delhi: {
+                    name: 'Delhi',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Pusa',
+                            spokes: ['ITI Shahdara', 'ITI Malviya Nagar', 'ITI Jahangirpuri']
+                        },
+                        {
+                            cluster: 'Cluster 2',
+                            hub: 'ITI Narela',
+                            spokes: ['ITI Rohini', 'ITI Bawana', 'ITI Sultanpuri', 'ITI Mangolpuri']
+                        }
+                    ]
+                },
+                assam: {
+                    name: 'Assam',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Guwahati',
+                            spokes: ['ITI Jorhat', 'ITI Dibrugarh', 'ITI Silchar']
+                        }
+                    ]
+                },
+                bihar: {
+                    name: 'Bihar',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Patna',
+                            spokes: ['ITI Gaya', 'ITI Muzaffarpur', 'ITI Bhagalpur', 'ITI Darbhanga']
+                        }
+                    ]
+                },
+                chattisgarh: {
+                    name: 'Chattisgarh',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Raipur',
+                            spokes: ['ITI Bilaspur', 'ITI Durg', 'ITI Korba']
+                        },
+                        {
+                            cluster: 'Cluster 2',
+                            hub: 'ITI Rajnandgaon',
+                            spokes: ['ITI Jagdalpur', 'ITI Ambikapur', 'ITI Raigarh']
+                        }
+                    ]
+                },
+                up: {
+                    name: 'Uttar Pradesh',
+                    clusters: [
+                        {
+                            cluster: 'Cluster 1',
+                            hub: 'ITI Lucknow',
+                            spokes: ['ITI Kanpur', 'ITI Allahabad', 'ITI Varanasi', 'ITI Agra']
+                        }
+                    ]
+                }
+            };
+
+            // State dropdown handler
+            const stateSelect = document.getElementById('stateSelect');
+            const clusterReportTable = document.getElementById('clusterReportTable');
+            const noStateSelected = document.getElementById('noStateSelected');
+            const selectedStateName = document.getElementById('selectedStateName');
+            const clusterTableBody = document.getElementById('clusterTableBody');
+            const downloadBtn = document.getElementById('downloadExcel');
+
+            const romanNumerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
+
+            // Store current table data for export
+            let currentExportData = [];
+
+            function updateClusterTable() {
+                const selectedOptions = Array.from(stateSelect.selectedOptions).map(opt => opt.value);
+                
+                if (selectedOptions.length > 0) {
+                    // Get selected state names for header
+                    const stateNames = selectedOptions.map(state => clusterData[state]?.name).filter(Boolean);
+                    selectedStateName.textContent = stateNames.join(', ');
+                    
+                    // Build table rows
+                    let html = '';
+                    let sno = 1;
+                    currentExportData = [];
+                    
+                    selectedOptions.forEach(selectedState => {
+                        if (clusterData[selectedState]) {
+                            const data = clusterData[selectedState];
+                            
+                            data.clusters.forEach(cluster => {
+                                const spokeCount = cluster.spokes.length;
+                                
+                                cluster.spokes.forEach((spoke, index) => {
+                                    // Store data for export
+                                    currentExportData.push({
+                                        'S.No': index === 0 ? sno : '',
+                                        'State/UT': index === 0 ? data.name : '',
+                                        'Cluster': index === 0 ? cluster.cluster : '',
+                                        'Hub': index === 0 ? cluster.hub : '',
+                                        'Spoke': `${romanNumerals[index]} ${spoke}`
+                                    });
+                                    
+                                    html += '<tr>';
+                                    
+                                    if (index === 0) {
+                                        html += `<td rowspan="${spokeCount}">${sno}</td>`;
+                                        html += `<td rowspan="${spokeCount}">${data.name}</td>`;
+                                        html += `<td rowspan="${spokeCount}">${cluster.cluster}</td>`;
+                                        html += `<td rowspan="${spokeCount}">${cluster.hub}</td>`;
+                                    }
+                                    
+                                    html += `<td><span class="roman">${romanNumerals[index]}</span> ${spoke}</td>`;
+                                    html += '</tr>';
+                                });
+                                
+                                sno++;
+                            });
+                        }
+                    });
+                    
+                    clusterTableBody.innerHTML = html;
+                    clusterReportTable.style.display = 'block';
+                    noStateSelected.style.display = 'none';
+                    downloadBtn.disabled = false;
+                } else {
+                    clusterReportTable.style.display = 'none';
+                    noStateSelected.style.display = 'block';
+                    downloadBtn.disabled = true;
+                    currentExportData = [];
+                }
+            }
+
+            stateSelect.addEventListener('change', updateClusterTable);
+
+            // Excel Download Function
+            downloadBtn.addEventListener('click', function() {
+                if (currentExportData.length === 0) {
+                    alert('Please select at least one state to download the report.');
+                    return;
+                }
+
+                // Create workbook and worksheet
+                const wb = XLSX.utils.book_new();
+                
+                // Prepare data with proper structure for merged cells display
+                const exportDataForExcel = [];
+                let currentSno = '';
+                let currentState = '';
+                let currentCluster = '';
+                let currentHub = '';
+                
+                currentExportData.forEach(row => {
+                    if (row['S.No'] !== '') currentSno = row['S.No'];
+                    if (row['State/UT'] !== '') currentState = row['State/UT'];
+                    if (row['Cluster'] !== '') currentCluster = row['Cluster'];
+                    if (row['Hub'] !== '') currentHub = row['Hub'];
+                    
+                    exportDataForExcel.push({
+                        'S.No': row['S.No'] !== '' ? row['S.No'] : currentSno,
+                        'State/UT': row['State/UT'] !== '' ? row['State/UT'] : currentState,
+                        'Cluster': row['Cluster'] !== '' ? row['Cluster'] : currentCluster,
+                        'Hub': row['Hub'] !== '' ? row['Hub'] : currentHub,
+                        'Spoke': row['Spoke']
+                    });
+                });
+
+                const ws = XLSX.utils.json_to_sheet(exportDataForExcel);
+                
+                // Set column widths
+                ws['!cols'] = [
+                    { wch: 8 },   // S.No
+                    { wch: 20 },  // State/UT
+                    { wch: 15 },  // Cluster
+                    { wch: 25 },  // Hub
+                    { wch: 30 }   // Spoke
+                ];
+
+                XLSX.utils.book_append_sheet(wb, ws, 'Cluster Report');
+                
+                // Generate filename with selected states
+                const selectedStates = Array.from(stateSelect.selectedOptions).map(opt => opt.text).join('_');
+                const fileName = `Cluster_Report_${selectedStates}_${new Date().toISOString().slice(0,10)}.xlsx`;
+                
+                // Download
+                XLSX.writeFile(wb, fileName);
+            });
+
+            // Initially disable download button
+            downloadBtn.disabled = true;
+            
+            // Table sorting indicators (visual only for interface)
+            const sortIndicators = document.querySelectorAll('.sort-indicator');
+            sortIndicators.forEach(indicator => {
+                indicator.addEventListener('click', function() {
+                    const sortType = this.getAttribute('data-sort');
+                    alert(`Sorting by ${sortType} - This is a visual interface only`);
+                });
+            });
+            
+            // Edit buttons in view forms table
+            const editButtons = document.querySelectorAll('.table-container .btn');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('Edit form functionality would open here. This is a visual interface only.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

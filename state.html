@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Setu - ITI Form Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f5ff;
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #4fc3f7;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .state-info {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .state-info i {
+            margin-right: 10px;
+            color: #80deea;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(to bottom, #1a3a8f, #2a5298);
+            color: white;
+            padding: 30px 20px;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+            overflow-y: auto;
+            z-index: 5;
+        }
+
+        .sidebar h3 {
+            font-size: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar h3 i {
+            color: #80deea;
+        }
+
+        .menu-items {
+            list-style: none;
+        }
+
+        .menu-item {
+            margin-bottom: 10px;
+        }
+
+        .menu-item a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #e3f2fd;
+            text-decoration: none;
+            padding: 16px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .menu-item a:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active a {
+            background-color: rgba(79, 195, 247, 0.2);
+            color: white;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .menu-item i {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Content Panel */
+        .content-panel {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background-color: #f8fbff;
+        }
+
+        .panel-title {
+            font-size: 26px;
+            color: #1e3c72;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .panel-title i {
+            color: #2a5298;
+        }
+
+        /* ITI Form Panel */
+        .form-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2a5298;
+            font-size: 17px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #2a5298;
+            outline: none;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(to right, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(42, 82, 152, 0.2);
+        }
+
+        /* Table for View Forms and Logs */
+        .table-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #f0f7ff;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            color: #1e3c72;
+            font-weight: 700;
+            border-bottom: 2px solid #e0e0e0;
+            font-size: 16px;
+        }
+
+        td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tr:hover {
+            background-color: #f9fcff;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-submitted {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .sort-indicator {
+            margin-left: 8px;
+            color: #2a5298;
+            cursor: pointer;
+        }
+
+        /* Frame Styles */
+        .frame {
+            border: 2px solid #2a5298;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background: #f8fbff;
+        }
+
+        .frame-title {
+            color: #2a5298;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #2a5298;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .radio-label input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .cluster-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .cluster-item h4 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .iti-item {
+            background: #f0f5ff;
+            border-left: 3px solid #2a5298;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .iti-item h5 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Logs Panel */
+        .log-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #2a5298;
+        }
+
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .log-action {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 17px;
+        }
+
+        .log-date {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .log-details {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* View Form Styles */
+        .view-only-notice {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #1565c0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-only-notice i {
+            font-size: 20px;
+        }
+
+        .edit-notice {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #e65100;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .edit-notice i {
+            font-size: 20px;
+        }
+
+        .view-field {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: #f8fbff;
+            border-radius: 6px;
+            border-left: 3px solid #2a5298;
+        }
+
+        .view-field label {
+            display: block;
+            font-weight: 600;
+            color: #2a5298;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .view-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .submission-info {
+            margin-top: 25px;
+            padding: 15px 20px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            color: #2e7d32;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-update {
+            background: linear-gradient(to right, #ff9800, #f57c00);
+        }
+
+        .btn-update:hover {
+            box-shadow: 0 7px 14px rgba(255, 152, 0, 0.3);
+        }
+
+        .view-cluster-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .view-cluster-item h4 {
+            color: #2a5298;
+            margin-bottom: 12px;
+            font-size: 1em;
+        }
+
+        /* Hide all panels initially */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .menu-items {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            
+            .menu-item a {
+                padding: 12px 15px;
+            }
+            
+            .content-panel {
+                padding: 20px;
+            }
+            
+            .form-container, .table-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-bridge"></i> PM Setu Dashboard</h1>
+            <div class="state-info">
+                <i class="fas fa-map-marker-alt"></i> Currently logged in: <strong>Centre</strong>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <h3><i class="fas fa-tasks"></i> ITI Form Management</h3>
+                <ul class="menu-items">
+                    <li class="menu-item active" data-target="form-panel" id="fillFormMenu">
+                        <a href="#"><i class="fas fa-edit"></i> Fill ITI Form</a>
+                    </li>
+                    <li class="menu-item hidden" data-target="view-panel" id="viewFormMenu">
+                        <a href="#"><i class="fas fa-eye"></i> View Submitted Form</a>
+                    </li>
+                    <li class="menu-item hidden" data-target="edit-panel" id="editFormMenu">
+                        <a href="#"><i class="fas fa-pen"></i> Edit Form</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Content Panel -->
+            <div class="content-panel">
+                <!-- Fill ITI Form Panel -->
+                <div id="form-panel" class="panel active">
+                    <h2 class="panel-title"><i class="fas fa-edit"></i> Fill New ITI Form</h2>
+                    
+                    <div class="form-container">
+                        <form id="itiForm">
+                            <!-- Frame 1: Cluster Details -->
+                            <div class="frame">
+                                <h3 class="frame-title"><i class="fas fa-layer-group"></i> Cluster Details</h3>
+                                
+                                <div class="form-group">
+                                    <label>Cluster Identified:</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="clusterIdentified" value="yes" onchange="toggleClusterFields()"> Yes
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="clusterIdentified" value="no" onchange="toggleClusterFields()"> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="clusterFieldsContainer" class="hidden">
+                                    <div class="form-group">
+                                        <label for="numClusters"><i class="fas fa-hashtag"></i> No. of Cluster Identified:</label>
+                                        <input type="number" id="numClusters" name="numClusters" class="form-control" min="0" onchange="generateClusterForms()">
+                                    </div>
+
+                                    <div id="clustersContainer"></div>
+                                </div>
+                            </div>
+
+                            <!-- Frame 2: General Information -->
+                            <div class="frame">
+                                <h3 class="frame-title"><i class="fas fa-info-circle"></i> General Information</h3>
+                                
+                                <div class="row-2col">
+                                    <div class="form-group">
+                                        <label>SPMU Established:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="spmuEstablished" value="yes"> Yes
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="spmuEstablished" value="no"> No
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Steering Committee Formed:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="scFormed" value="yes" onchange="toggleSCDate()"> Yes
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="scFormed" value="no" onchange="toggleSCDate()"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden" id="scDateContainer">
+                                    <label for="scFormationDate"><i class="fas fa-calendar-alt"></i> Date of SC Formation:</label>
+                                    <input type="date" id="scFormationDate" name="scFormationDate" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="bidSelectionStage"><i class="fas fa-gavel"></i> BID Selection Stage:</label>
+                                    <select id="bidSelectionStage" name="bidSelectionStage" class="form-control">
+                                        <option value="">Select Stage</option>
+                                        <option value="notStarted">Not Started</option>
+                                        <option value="rfpPreparation">RFP Under Preparation</option>
+                                        <option value="bidSubmission">Bid Submission - In Process</option>
+                                        <option value="bidEvaluation">Bid Evaluation - In Process</option>
+                                        <option value="awardStage">In Award Stage</option>
+                                        <option value="aipOnBoard">AIP on Board</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn">
+                                <i class="fas fa-paper-plane"></i> Submit Form
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- View Forms Panel (Read-Only) -->
+                <div id="view-panel" class="panel">
+                    <h2 class="panel-title"><i class="fas fa-eye"></i> View Submitted Form</h2>
+                    
+                    <div class="form-container">
+                        <div class="view-only-notice">
+                            <i class="fas fa-info-circle"></i> This is a read-only view of your submitted form. Use "Edit Form" option to make changes.
+                        </div>
+                        
+                        <!-- Frame 1: Cluster Details (View) -->
+                        <div class="frame">
+                            <h3 class="frame-title"><i class="fas fa-layer-group"></i> Cluster Details</h3>
+                            
+                            <div class="view-field">
+                                <label>Cluster Identified:</label>
+                                <span id="view_clusterIdentified" class="view-value">-</span>
+                            </div>
+
+                            <div id="view_clusterDetails" class="hidden">
+                                <div class="view-field">
+                                    <label>No. of Clusters:</label>
+                                    <span id="view_numClusters" class="view-value">-</span>
+                                </div>
+                                <div id="view_clustersContainer"></div>
+                            </div>
+                        </div>
+
+                        <!-- Frame 2: General Information (View) -->
+                        <div class="frame">
+                            <h3 class="frame-title"><i class="fas fa-info-circle"></i> General Information</h3>
+                            
+                            <div class="row-2col">
+                                <div class="view-field">
+                                    <label>SPMU Established:</label>
+                                    <span id="view_spmuEstablished" class="view-value">-</span>
+                                </div>
+                                <div class="view-field">
+                                    <label>Steering Committee Formed:</label>
+                                    <span id="view_scFormed" class="view-value">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="view-field" id="view_scDateField" class="hidden">
+                                <label>Date of SC Formation:</label>
+                                <span id="view_scFormationDate" class="view-value">-</span>
+                            </div>
+
+                            <div class="view-field">
+                                <label>BID Selection Stage:</label>
+                                <span id="view_bidSelectionStage" class="view-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="submission-info">
+                            <i class="fas fa-clock"></i> Form submitted on: <span id="view_submissionDate">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Form Panel -->
+                <div id="edit-panel" class="panel">
+                    <h2 class="panel-title"><i class="fas fa-pen"></i> Edit Form</h2>
+                    
+                    <div class="form-container">
+                        <div class="edit-notice">
+                            <i class="fas fa-edit"></i> You can edit your form details below. Click "Update Form" to save changes.
+                        </div>
+                        
+                        <form id="editForm">
+                            <!-- Frame 1: Cluster Details -->
+                            <div class="frame">
+                                <h3 class="frame-title"><i class="fas fa-layer-group"></i> Cluster Details</h3>
+                                
+                                <div class="form-group">
+                                    <label>Cluster Identified:</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="edit_clusterIdentified" value="yes" onchange="toggleEditClusterFields()"> Yes
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="edit_clusterIdentified" value="no" onchange="toggleEditClusterFields()"> No
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="editClusterFieldsContainer" class="hidden">
+                                    <div class="form-group">
+                                        <label for="edit_numClusters"><i class="fas fa-hashtag"></i> No. of Cluster Identified:</label>
+                                        <input type="number" id="edit_numClusters" name="edit_numClusters" class="form-control" min="0" onchange="generateEditClusterForms()">
+                                    </div>
+
+                                    <div id="editClustersContainer"></div>
+                                </div>
+                            </div>
+
+                            <!-- Frame 2: General Information -->
+                            <div class="frame">
+                                <h3 class="frame-title"><i class="fas fa-info-circle"></i> General Information</h3>
+                                
+                                <div class="row-2col">
+                                    <div class="form-group">
+                                        <label>SPMU Established:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="edit_spmuEstablished" value="yes"> Yes
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="edit_spmuEstablished" value="no"> No
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Steering Committee Formed:</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="edit_scFormed" value="yes" onchange="toggleEditSCDate()"> Yes
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="edit_scFormed" value="no" onchange="toggleEditSCDate()"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group hidden" id="editScDateContainer">
+                                    <label for="edit_scFormationDate"><i class="fas fa-calendar-alt"></i> Date of SC Formation:</label>
+                                    <input type="date" id="edit_scFormationDate" name="edit_scFormationDate" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="edit_bidSelectionStage"><i class="fas fa-gavel"></i> BID Selection Stage:</label>
+                                    <select id="edit_bidSelectionStage" name="edit_bidSelectionStage" class="form-control">
+                                        <option value="">Select Stage</option>
+                                        <option value="notStarted">Not Started</option>
+                                        <option value="rfpPreparation">RFP Under Preparation</option>
+                                        <option value="bidSubmission">Bid Submission - In Process</option>
+                                        <option value="bidEvaluation">Bid Evaluation - In Process</option>
+                                        <option value="awardStage">In Award Stage</option>
+                                        <option value="aipOnBoard">AIP on Board</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-update">
+                                <i class="fas fa-save"></i> Update Form
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Activity Log Panel -->
+                <div id="logs-panel" class="panel">
+                    <h2 class="panel-title"><i class="fas fa-history"></i> Form Activity Log</h2>
+                    
+                    <div class="table-container">
+                        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="color: #1e3c72;">Recent Activities</h3>
+                            <div>
+                                <span>Sort by: </span>
+                                <select id="logSort" class="form-control" style="width: auto; display: inline-block; padding: 8px 15px; margin-left: 10px;">
+                                    <option value="date-desc">Date (Newest First)</option>
+                                    <option value="date-asc">Date (Oldest First)</option>
+                                    <option value="action">Action Type</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Edited</div>
+                                <div class="log-date">28 October 2023, 14:32</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-003 was edited by User: Admin_MH001. Changes made to student count field.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">New Form Submitted</div>
+                                <div class="log-date">27 October 2023, 10:15</div>
+                            </div>
+                            <div class="log-details">
+                                New ITI Form ID: ITI-2023-004 created for Rural ITI, Aurangabad with Engineering course type.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Viewed</div>
+                                <div class="log-date">26 October 2023, 16:45</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-001 was accessed by User: Inspector_MH005 for review purposes.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Status Updated</div>
+                                <div class="log-date">25 October 2023, 11:20</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-002 status changed from "Pending" to "Under Review" by User: Admin_MH001.
+                            </div>
+                        </div>
+                        
+                        <div class="log-item">
+                            <div class="log-header">
+                                <div class="log-action">Form Generated</div>
+                                <div class="log-date">24 October 2023, 09:30</div>
+                            </div>
+                            <div class="log-details">
+                                Form ID: ITI-2023-003 generated for Women's ITI, Nagpur with Non-Engineering course type.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store form data
+        let formSubmitted = localStorage.getItem('formSubmitted') === 'true';
+        let savedFormData = JSON.parse(localStorage.getItem('formData') || 'null');
+
+        const bidStageLabels = {
+            'notStarted': 'Not Started',
+            'rfpPreparation': 'RFP Under Preparation',
+            'bidSubmission': 'Bid Submission - In Process',
+            'bidEvaluation': 'Bid Evaluation - In Process',
+            'awardStage': 'In Award Stage',
+            'aipOnBoard': 'AIP on Board'
+        };
+
+        // Navigation between panels
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const panels = document.querySelectorAll('.panel');
+            
+            // Check if form already submitted and update UI
+            updateMenuVisibility();
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    if (this.classList.contains('hidden')) return;
+                    
+                    const target = this.getAttribute('data-target');
+                    
+                    // Update active menu item
+                    menuItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show target panel
+                    panels.forEach(panel => {
+                        panel.classList.remove('active');
+                        if (panel.id === target) {
+                            panel.classList.add('active');
+                        }
+                    });
+
+                    // If viewing or editing, populate data
+                    if (target === 'view-panel' && savedFormData) {
+                        populateViewForm();
+                    } else if (target === 'edit-panel' && savedFormData) {
+                        populateEditForm();
+                    }
+                });
+            });
+            
+            // Form submission (first time)
+            const itiForm = document.getElementById('itiForm');
+            itiForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const formData = collectFormData('');
+                formData.submissionDate = new Date().toLocaleString();
+                
+                // Save to localStorage
+                localStorage.setItem('formSubmitted', 'true');
+                localStorage.setItem('formData', JSON.stringify(formData));
+                
+                formSubmitted = true;
+                savedFormData = formData;
+                
+                alert('Form submitted successfully! You can now view or edit your submitted form.');
+                
+                // Update menu visibility
+                updateMenuVisibility();
+                
+                // Switch to view panel
+                document.getElementById('viewFormMenu').click();
+            });
+
+            // Edit form submission
+            const editForm = document.getElementById('editForm');
+            editForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect form data
+                const formData = collectFormData('edit_');
+                formData.submissionDate = savedFormData.submissionDate;
+                formData.lastUpdated = new Date().toLocaleString();
+                
+                // Save to localStorage
+                localStorage.setItem('formData', JSON.stringify(formData));
+                savedFormData = formData;
+                
+                alert('Form updated successfully!');
+                
+                // Switch to view panel
+                document.getElementById('viewFormMenu').click();
+            });
+        });
+
+        function updateMenuVisibility() {
+            const fillFormMenu = document.getElementById('fillFormMenu');
+            const viewFormMenu = document.getElementById('viewFormMenu');
+            const editFormMenu = document.getElementById('editFormMenu');
+            
+            if (formSubmitted) {
+                // Hide fill form, show view and edit
+                fillFormMenu.classList.add('hidden');
+                viewFormMenu.classList.remove('hidden');
+                editFormMenu.classList.remove('hidden');
+                
+                // Set view as active
+                fillFormMenu.classList.remove('active');
+                viewFormMenu.classList.add('active');
+                
+                // Show view panel
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('view-panel').classList.add('active');
+                
+                // Populate view
+                if (savedFormData) {
+                    populateViewForm();
+                }
+            } else {
+                // Show fill form, hide view and edit
+                fillFormMenu.classList.remove('hidden');
+                viewFormMenu.classList.add('hidden');
+                editFormMenu.classList.add('hidden');
+            }
+        }
+
+        function collectFormData(prefix) {
+            const data = {};
+            
+            // Cluster data
+            const clusterIdentified = document.querySelector(`input[name="${prefix}clusterIdentified"]:checked`);
+            data.clusterIdentified = clusterIdentified ? clusterIdentified.value : '';
+            
+            if (data.clusterIdentified === 'yes') {
+                data.numClusters = document.getElementById(prefix + 'numClusters')?.value || '';
+                data.clusters = [];
+                
+                const numClusters = parseInt(data.numClusters) || 0;
+                for (let i = 1; i <= numClusters; i++) {
+                    const cluster = {
+                        hubITI: document.getElementById(`${prefix}hubITI_${i}`)?.value || '',
+                        spokes: []
+                    };
+                    
+                    const numSpokes = parseInt(document.getElementById(`${prefix}numSpokes_${i}`)?.value) || 0;
+                    for (let j = 1; j <= numSpokes; j++) {
+                        cluster.spokes.push({
+                            name: document.getElementById(`${prefix}itiName_${i}_${j}`)?.selectedOptions[0]?.text || '',
+                            misCode: document.getElementById(`${prefix}itiMISCode_${i}_${j}`)?.value || '',
+                            district: document.getElementById(`${prefix}district_${i}_${j}`)?.value || '',
+                            address: document.getElementById(`${prefix}itiAddress_${i}_${j}`)?.value || ''
+                        });
+                    }
+                    
+                    data.clusters.push(cluster);
+                }
+            }
+            
+            // General info
+            const spmuEstablished = document.querySelector(`input[name="${prefix}spmuEstablished"]:checked`);
+            data.spmuEstablished = spmuEstablished ? spmuEstablished.value : '';
+            
+            const scFormed = document.querySelector(`input[name="${prefix}scFormed"]:checked`);
+            data.scFormed = scFormed ? scFormed.value : '';
+            
+            data.scFormationDate = document.getElementById(prefix + 'scFormationDate')?.value || '';
+            data.bidSelectionStage = document.getElementById(prefix + 'bidSelectionStage')?.value || '';
+            
+            return data;
+        }
+
+        function populateViewForm() {
+            if (!savedFormData) return;
+            
+            // Cluster info
+            document.getElementById('view_clusterIdentified').textContent = savedFormData.clusterIdentified === 'yes' ? 'Yes' : 'No';
+            
+            if (savedFormData.clusterIdentified === 'yes') {
+                document.getElementById('view_clusterDetails').classList.remove('hidden');
+                document.getElementById('view_numClusters').textContent = savedFormData.numClusters || '0';
+                
+                // Populate clusters
+                const container = document.getElementById('view_clustersContainer');
+                container.innerHTML = '';
+                
+                if (savedFormData.clusters) {
+                    savedFormData.clusters.forEach((cluster, index) => {
+                        let spokesHtml = cluster.spokes.map((spoke, i) => `
+                            <div class="view-field">
+                                <label>Spoke ITI ${i + 1}:</label>
+                                <span class="view-value">${spoke.name || '-'} (${spoke.misCode || '-'})</span>
+                            </div>
+                        `).join('');
+                        
+                        container.innerHTML += `
+                            <div class="view-cluster-item">
+                                <h4><i class="fas fa-layer-group"></i> Cluster ${index + 1}</h4>
+                                <div class="view-field">
+                                    <label>Hub ITI:</label>
+                                    <span class="view-value">${cluster.hubITI || '-'}</span>
+                                </div>
+                                ${spokesHtml}
+                            </div>
+                        `;
+                    });
+                }
+            } else {
+                document.getElementById('view_clusterDetails').classList.add('hidden');
+            }
+            
+            // General info
+            document.getElementById('view_spmuEstablished').textContent = savedFormData.spmuEstablished === 'yes' ? 'Yes' : 'No';
+            document.getElementById('view_scFormed').textContent = savedFormData.scFormed === 'yes' ? 'Yes' : 'No';
+            
+            if (savedFormData.scFormed === 'yes' && savedFormData.scFormationDate) {
+                document.getElementById('view_scDateField').classList.remove('hidden');
+                document.getElementById('view_scFormationDate').textContent = savedFormData.scFormationDate;
+            } else {
+                document.getElementById('view_scDateField').classList.add('hidden');
+            }
+            
+            document.getElementById('view_bidSelectionStage').textContent = bidStageLabels[savedFormData.bidSelectionStage] || '-';
+            document.getElementById('view_submissionDate').textContent = savedFormData.submissionDate || '-';
+        }
+
+        function populateEditForm() {
+            if (!savedFormData) return;
+            
+            // Cluster info
+            if (savedFormData.clusterIdentified) {
+                document.querySelector(`input[name="edit_clusterIdentified"][value="${savedFormData.clusterIdentified}"]`).checked = true;
+                toggleEditClusterFields();
+                
+                if (savedFormData.clusterIdentified === 'yes' && savedFormData.numClusters) {
+                    document.getElementById('edit_numClusters').value = savedFormData.numClusters;
+                    generateEditClusterForms();
+                    
+                    // Populate cluster data
+                    if (savedFormData.clusters) {
+                        savedFormData.clusters.forEach((cluster, i) => {
+                            const clusterId = i + 1;
+                            document.getElementById(`edit_hubITI_${clusterId}`).value = cluster.hubITI || '';
+                            
+                            if (cluster.spokes && cluster.spokes.length > 0) {
+                                document.getElementById(`edit_numSpokes_${clusterId}`).value = cluster.spokes.length;
+                                generateEditSpokeITIs(clusterId);
+                                
+                                cluster.spokes.forEach((spoke, j) => {
+                                    const spokeId = j + 1;
+                                    // Find and select the ITI
+                                    const select = document.getElementById(`edit_itiName_${clusterId}_${spokeId}`);
+                                    if (select && spoke.name) {
+                                        for (let opt of select.options) {
+                                            if (opt.text === spoke.name) {
+                                                opt.selected = true;
+                                                populateEditITIDetails(clusterId, spokeId);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            
+            // General info
+            if (savedFormData.spmuEstablished) {
+                document.querySelector(`input[name="edit_spmuEstablished"][value="${savedFormData.spmuEstablished}"]`).checked = true;
+            }
+            
+            if (savedFormData.scFormed) {
+                document.querySelector(`input[name="edit_scFormed"][value="${savedFormData.scFormed}"]`).checked = true;
+                toggleEditSCDate();
+            }
+            
+            if (savedFormData.scFormationDate) {
+                document.getElementById('edit_scFormationDate').value = savedFormData.scFormationDate;
+            }
+            
+            if (savedFormData.bidSelectionStage) {
+                document.getElementById('edit_bidSelectionStage').value = savedFormData.bidSelectionStage;
+            }
+        }
+
+        // ITI Database with dummy data
+        const itiDatabase = [
+            { name: 'ITI-ABC', misCode: 'MIS001', district: 'Patna', address: 'Gandhi Maidan, Patna, 800001' },
+            { name: 'ITI-XYZ', misCode: 'MIS002', district: 'Guwahati', address: 'Pan Bazar, Guwahati, 781001' },
+            { name: 'ITI-DEF', misCode: 'MIS003', district: 'Lucknow', address: 'Hazratganj, Lucknow, 226001' },
+            { name: 'ITI-GHI', misCode: 'MIS004', district: 'Ahmedabad', address: 'Ashram Road, Ahmedabad, 380009' },
+            { name: 'ITI-JKL', misCode: 'MIS005', district: 'Muzaffarpur', address: 'Bairia, Muzaffarpur, 842001' },
+            { name: 'ITI-MNO', misCode: 'MIS006', district: 'Dibrugarh', address: 'Graham Bazar, Dibrugarh, 786001' },
+            { name: 'ITI-PQR', misCode: 'MIS007', district: 'Kanpur', address: 'Civil Lines, Kanpur, 208001' },
+            { name: 'ITI-STU', misCode: 'MIS008', district: 'Surat', address: 'Ring Road, Surat, 395002' },
+            { name: 'ITI-VWX', misCode: 'MIS009', district: 'Gaya', address: 'Station Road, Gaya, 823001' },
+            { name: 'ITI-YZA', misCode: 'MIS010', district: 'Vadodara', address: 'Race Course, Vadodara, 390007' }
+        ];
+
+        // Fill Form Functions
+        function toggleClusterFields() {
+            const clusterIdentified = document.querySelector('input[name="clusterIdentified"]:checked');
+            const container = document.getElementById('clusterFieldsContainer');
+            
+            if (clusterIdentified && clusterIdentified.value === 'yes') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('numClusters').value = '';
+                document.getElementById('clustersContainer').innerHTML = '';
+            }
+        }
+
+        function toggleSCDate() {
+            const scFormed = document.querySelector('input[name="scFormed"]:checked');
+            const dateContainer = document.getElementById('scDateContainer');
+            
+            if (scFormed && scFormed.value === 'yes') {
+                dateContainer.classList.remove('hidden');
+            } else {
+                dateContainer.classList.add('hidden');
+                document.getElementById('scFormationDate').value = '';
+            }
+        }
+
+        function generateClusterForms() {
+            const numClusters = parseInt(document.getElementById('numClusters').value);
+            const container = document.getElementById('clustersContainer');
+            container.innerHTML = '';
+
+            if (isNaN(numClusters) || numClusters <= 0) return;
+
+            for (let i = 1; i <= numClusters; i++) {
+                const clusterDiv = document.createElement('div');
+                clusterDiv.className = 'cluster-item';
+                clusterDiv.innerHTML = `
+                    <h4><i class="fas fa-layer-group"></i> Cluster ${i}</h4>
+                    <div class="form-group">
+                        <label for="hubITI_${i}"><i class="fas fa-building"></i> Hub ITI:</label>
+                        <input type="text" id="hubITI_${i}" name="hubITI_${i}" class="form-control" placeholder="Enter Hub ITI Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="numSpokes_${i}"><i class="fas fa-hashtag"></i> Number of Spoke ITIs:</label>
+                        <input type="number" id="numSpokes_${i}" name="numSpokes_${i}" class="form-control" min="0" onchange="generateSpokeITIs(${i})">
+                    </div>
+                    <div id="spokesContainer_${i}"></div>
+                `;
+                container.appendChild(clusterDiv);
+            }
+        }
+
+        function generateSpokeITIs(clusterId) {
+            const numSpokes = parseInt(document.getElementById(`numSpokes_${clusterId}`).value);
+            const container = document.getElementById(`spokesContainer_${clusterId}`);
+            container.innerHTML = '';
+
+            if (isNaN(numSpokes) || numSpokes <= 0) return;
+
+            for (let i = 1; i <= numSpokes; i++) {
+                const spokeDiv = document.createElement('div');
+                spokeDiv.className = 'iti-item';
+                spokeDiv.innerHTML = `
+                    <h5><i class="fas fa-university"></i> Spoke ITI ${i}</h5>
+                    <div class="row-2col">
+                        <div class="form-group">
+                            <label for="itiName_${clusterId}_${i}">ITI Name:</label>
+                            <select id="itiName_${clusterId}_${i}" name="itiName_${clusterId}_${i}" class="form-control" onchange="populateITIDetails(${clusterId}, ${i})">
+                                <option value="">Select ITI</option>
+                                ${itiDatabase.map((iti, idx) => `<option value="${idx}">${iti.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="itiMISCode_${clusterId}_${i}">ITI MIS Code:</label>
+                            <input type="text" id="itiMISCode_${clusterId}_${i}" name="itiMISCode_${clusterId}_${i}" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="row-2col">
+                        <div class="form-group">
+                            <label for="district_${clusterId}_${i}">District:</label>
+                            <input type="text" id="district_${clusterId}_${i}" name="district_${clusterId}_${i}" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="itiAddress_${clusterId}_${i}">ITI Address:</label>
+                            <input type="text" id="itiAddress_${clusterId}_${i}" name="itiAddress_${clusterId}_${i}" class="form-control" readonly>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(spokeDiv);
+            }
+        }
+
+        function populateITIDetails(clusterId, spokeId) {
+            const select = document.getElementById(`itiName_${clusterId}_${spokeId}`);
+            const selectedIndex = select.value;
+            
+            if (selectedIndex === '') {
+                document.getElementById(`itiMISCode_${clusterId}_${spokeId}`).value = '';
+                document.getElementById(`district_${clusterId}_${spokeId}`).value = '';
+                document.getElementById(`itiAddress_${clusterId}_${spokeId}`).value = '';
+                return;
+            }
+            
+            const iti = itiDatabase[selectedIndex];
+            document.getElementById(`itiMISCode_${clusterId}_${spokeId}`).value = iti.misCode;
+            document.getElementById(`district_${clusterId}_${spokeId}`).value = iti.district;
+            document.getElementById(`itiAddress_${clusterId}_${spokeId}`).value = iti.address;
+        }
+
+        // Edit Form Functions
+        function toggleEditClusterFields() {
+            const clusterIdentified = document.querySelector('input[name="edit_clusterIdentified"]:checked');
+            const container = document.getElementById('editClusterFieldsContainer');
+            
+            if (clusterIdentified && clusterIdentified.value === 'yes') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('edit_numClusters').value = '';
+                document.getElementById('editClustersContainer').innerHTML = '';
+            }
+        }
+
+        function toggleEditSCDate() {
+            const scFormed = document.querySelector('input[name="edit_scFormed"]:checked');
+            const dateContainer = document.getElementById('editScDateContainer');
+            
+            if (scFormed && scFormed.value === 'yes') {
+                dateContainer.classList.remove('hidden');
+            } else {
+                dateContainer.classList.add('hidden');
+                document.getElementById('edit_scFormationDate').value = '';
+            }
+        }
+
+        function generateEditClusterForms() {
+            const numClusters = parseInt(document.getElementById('edit_numClusters').value);
+            const container = document.getElementById('editClustersContainer');
+            container.innerHTML = '';
+
+            if (isNaN(numClusters) || numClusters <= 0) return;
+
+            for (let i = 1; i <= numClusters; i++) {
+                const clusterDiv = document.createElement('div');
+                clusterDiv.className = 'cluster-item';
+                clusterDiv.innerHTML = `
+                    <h4><i class="fas fa-layer-group"></i> Cluster ${i}</h4>
+                    <div class="form-group">
+                        <label for="edit_hubITI_${i}"><i class="fas fa-building"></i> Hub ITI:</label>
+                        <input type="text" id="edit_hubITI_${i}" name="edit_hubITI_${i}" class="form-control" placeholder="Enter Hub ITI Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_numSpokes_${i}"><i class="fas fa-hashtag"></i> Number of Spoke ITIs:</label>
+                        <input type="number" id="edit_numSpokes_${i}" name="edit_numSpokes_${i}" class="form-control" min="0" onchange="generateEditSpokeITIs(${i})">
+                    </div>
+                    <div id="edit_spokesContainer_${i}"></div>
+                `;
+                container.appendChild(clusterDiv);
+            }
+        }
+
+        function generateEditSpokeITIs(clusterId) {
+            const numSpokes = parseInt(document.getElementById(`edit_numSpokes_${clusterId}`).value);
+            const container = document.getElementById(`edit_spokesContainer_${clusterId}`);
+            container.innerHTML = '';
+
+            if (isNaN(numSpokes) || numSpokes <= 0) return;
+
+            for (let i = 1; i <= numSpokes; i++) {
+                const spokeDiv = document.createElement('div');
+                spokeDiv.className = 'iti-item';
+                spokeDiv.innerHTML = `
+                    <h5><i class="fas fa-university"></i> Spoke ITI ${i}</h5>
+                    <div class="row-2col">
+                        <div class="form-group">
+                            <label for="edit_itiName_${clusterId}_${i}">ITI Name:</label>
+                            <select id="edit_itiName_${clusterId}_${i}" name="edit_itiName_${clusterId}_${i}" class="form-control" onchange="populateEditITIDetails(${clusterId}, ${i})">
+                                <option value="">Select ITI</option>
+                                ${itiDatabase.map((iti, idx) => `<option value="${idx}">${iti.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_itiMISCode_${clusterId}_${i}">ITI MIS Code:</label>
+                            <input type="text" id="edit_itiMISCode_${clusterId}_${i}" name="edit_itiMISCode_${clusterId}_${i}" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="row-2col">
+                        <div class="form-group">
+                            <label for="edit_district_${clusterId}_${i}">District:</label>
+                            <input type="text" id="edit_district_${clusterId}_${i}" name="edit_district_${clusterId}_${i}" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_itiAddress_${clusterId}_${i}">ITI Address:</label>
+                            <input type="text" id="edit_itiAddress_${clusterId}_${i}" name="edit_itiAddress_${clusterId}_${i}" class="form-control" readonly>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(spokeDiv);
+            }
+        }
+
+        function populateEditITIDetails(clusterId, spokeId) {
+            const select = document.getElementById(`edit_itiName_${clusterId}_${spokeId}`);
+            const selectedIndex = select.value;
+            
+            if (selectedIndex === '') {
+                document.getElementById(`edit_itiMISCode_${clusterId}_${spokeId}`).value = '';
+                document.getElementById(`edit_district_${clusterId}_${spokeId}`).value = '';
+                document.getElementById(`edit_itiAddress_${clusterId}_${spokeId}`).value = '';
+                return;
+            }
+            
+            const iti = itiDatabase[selectedIndex];
+            document.getElementById(`edit_itiMISCode_${clusterId}_${spokeId}`).value = iti.misCode;
+            document.getElementById(`edit_district_${clusterId}_${spokeId}`).value = iti.district;
+            document.getElementById(`edit_itiAddress_${clusterId}_${spokeId}`).value = iti.address;
+        }
+    </script>
+</body>
+</html>

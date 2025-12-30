@@ -127,19 +127,8 @@
 
         <form id="loginForm">
             <div class="form-group">
-                <label for="stateName">State/UTs Name:</label>
-                <select id="stateName" name="stateName" required>
-                    <option value="">Select State/UT</option>
-                    <option value="Assam">Assam</option>
-                    <option value="Uttar Pradesh">Uttar Pradesh</option>
-                    <option value="Bihar">Bihar</option>
-                    <option value="Gujarat">Gujarat</option>
-                </select>
-            </div>
-
-            <div class="form-group">
                 <label for="email">User Email ID:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <input type="email" id="email" name="email" value="centre@centermail.gov.in" required>
             </div>
 
             <div class="form-group">
@@ -151,37 +140,43 @@
                 <strong>Note:</strong> Please change password on 1st login
             </div>
 
-            <button type="submit" class="login-btn">Login</button>
+            <button type="submit" class="login-btn">Centre</button>
         </form>
     </div>
 
     <script>
-        // User credentials database
+        // User credentials database - Centre emails only
         const users = {
-            'assam@dgt.gov.in': { password: 'PMsetu@123', state: 'Assam' },
-            'up@dgt.gov.in': { password: 'PMsetu@123', state: 'Uttar Pradesh' },
-            'bihar@dgt.gov.in': { password: 'PMsetu@123', state: 'Bihar' },
-            'gujarat@dgt.gov.in': { password: 'PMsetu@123', state: 'Gujarat' }
+            'admin@centermail.gov.in': { password: 'PMsetu@123' },
+            'centre@centermail.gov.in': { password: 'PMsetu@123' },
+            'user@centermail.gov.in': { password: 'PMsetu@123' }
         };
 
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const stateName = document.getElementById('stateName').value;
             const email = document.getElementById('email').value.toLowerCase();
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
 
+            // Validate that email is from centermail.gov.in domain
+            if (!email.endsWith('@centermail.gov.in')) {
+                errorMessage.textContent = 'Please use a valid Centre email (e.g., user@centermail.gov.in)';
+                errorMessage.style.display = 'block';
+                setTimeout(() => { errorMessage.style.display = 'none'; }, 3000);
+                return;
+            }
+
             // Validate credentials
-            if (users[email] && users[email].password === password && users[email].state === stateName) {
-                // Store state name in session storage
-                sessionStorage.setItem('userState', stateName);
+            if (users[email] && users[email].password === password) {
+                // Store in session storage
                 sessionStorage.setItem('userEmail', email);
+                sessionStorage.setItem('userRole', 'Centre');
                 
-                // Redirect to state page
-                window.location.href = 'state.html';
+                // Redirect to centre page
+                window.location.href = 'centre.html';
             } else {
-                errorMessage.textContent = 'Invalid credentials. Please check your State/UT, Email, and Password.';
+                errorMessage.textContent = 'Invalid credentials. Please check your Email and Password.';
                 errorMessage.style.display = 'block';
                 
                 // Hide error after 3 seconds
@@ -191,22 +186,6 @@
             }
         });
 
-        // Auto-fill email based on state selection
-        document.getElementById('stateName').addEventListener('change', function() {
-            const state = this.value;
-            const emailInput = document.getElementById('email');
-            
-            const stateEmailMap = {
-                'Assam': 'assam@dgt.gov.in',
-                'Uttar Pradesh': 'up@dgt.gov.in',
-                'Bihar': 'bihar@dgt.gov.in',
-                'Gujarat': 'gujarat@dgt.gov.in'
-            };
-            
-            if (stateEmailMap[state]) {
-                emailInput.value = stateEmailMap[state];
-            }
-        });
     </script>
 </body>
 </html>
