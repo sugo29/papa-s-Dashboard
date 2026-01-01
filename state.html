@@ -67,6 +67,33 @@
             color: #80deea;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
         /* Main Content Area */
         .main-content {
             display: flex;
@@ -480,6 +507,104 @@
             font-size: 1em;
         }
 
+        /* File Upload Styles */
+        .file-upload-wrapper {
+            position: relative;
+        }
+
+        .file-input {
+            padding: 12px;
+            border: 2px dashed #2a5298;
+            background: #f8fbff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input:hover {
+            border-color: #1e3c72;
+            background: #e8f0ff;
+        }
+
+        .file-input::file-selector-button {
+            background: linear-gradient(to right, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .file-input::file-selector-button:hover {
+            background: linear-gradient(to right, #1e3c72, #152a5c);
+        }
+
+        .file-hint {
+            display: block;
+            margin-top: 8px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .uploaded-file-name {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #e8f5e9;
+            border-radius: 6px;
+            color: #2e7d32;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .uploaded-file-name.show {
+            display: flex;
+        }
+
+        .uploaded-file-name i {
+            font-size: 18px;
+        }
+
+        .uploaded-file-name .file-name {
+            flex: 1;
+        }
+
+        .uploaded-file-name .remove-file {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .uploaded-file-name .remove-file:hover {
+            background: #c0392b;
+        }
+
+        .view-file-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: linear-gradient(to right, #2a5298, #1e3c72);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .view-file-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(42, 82, 152, 0.3);
+        }
+
         /* Hide all panels initially */
         .panel {
             display: none;
@@ -531,8 +656,13 @@
         <!-- Header -->
         <header class="header">
             <h1><i class="fas fa-bridge"></i> PM Setu Dashboard</h1>
-            <div class="state-info">
-                <i class="fas fa-map-marker-alt"></i> Currently logged in: <strong>Centre</strong>
+            <div class="header-right">
+                <div class="state-info">
+                    <i class="fas fa-map-marker-alt"></i> Currently logged in as: <strong id="loggedInState">Loading...</strong>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
         </header>
 
@@ -623,6 +753,15 @@
                                     <input type="date" id="scFormationDate" name="scFormationDate" class="form-control">
                                 </div>
 
+                                <div class="form-group hidden" id="scMoMContainer">
+                                    <label for="scMoMUpload"><i class="fas fa-file-upload"></i> Upload MoM (Minutes of Meeting):</label>
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" id="scMoMUpload" name="scMoMUpload" class="form-control file-input" accept=".pdf,.doc,.docx" onchange="handleFileUpload(this, 'scMoMFileName')">
+                                        <small class="file-hint">Accepted formats: PDF, DOC, DOCX (Max 10MB)</small>
+                                        <div id="scMoMFileName" class="uploaded-file-name"></div>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="bidSelectionStage"><i class="fas fa-gavel"></i> BID Selection Stage:</label>
                                     <select id="bidSelectionStage" name="bidSelectionStage" class="form-control">
@@ -686,9 +825,14 @@
                                 </div>
                             </div>
                             
-                            <div class="view-field" id="view_scDateField" class="hidden">
+                            <div class="view-field hidden" id="view_scDateField">
                                 <label>Date of SC Formation:</label>
                                 <span id="view_scFormationDate" class="view-value">-</span>
+                            </div>
+
+                            <div class="view-field hidden" id="view_scMoMField">
+                                <label>MoM (Minutes of Meeting):</label>
+                                <span id="view_scMoMFile" class="view-value">-</span>
                             </div>
 
                             <div class="view-field">
@@ -772,6 +916,15 @@
                                 <div class="form-group hidden" id="editScDateContainer">
                                     <label for="edit_scFormationDate"><i class="fas fa-calendar-alt"></i> Date of SC Formation:</label>
                                     <input type="date" id="edit_scFormationDate" name="edit_scFormationDate" class="form-control">
+                                </div>
+
+                                <div class="form-group hidden" id="editScMoMContainer">
+                                    <label for="edit_scMoMUpload"><i class="fas fa-file-upload"></i> Upload MoM (Minutes of Meeting):</label>
+                                    <div class="file-upload-wrapper">
+                                        <input type="file" id="edit_scMoMUpload" name="edit_scMoMUpload" class="form-control file-input" accept=".pdf,.doc,.docx" onchange="handleFileUpload(this, 'edit_scMoMFileName')">
+                                        <small class="file-hint">Accepted formats: PDF, DOC, DOCX (Max 10MB)</small>
+                                        <div id="edit_scMoMFileName" class="uploaded-file-name"></div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
@@ -1006,8 +1159,11 @@
                 
                 const numClusters = parseInt(data.numClusters) || 0;
                 for (let i = 1; i <= numClusters; i++) {
+                    const hubSelect = document.getElementById(`${prefix}hubITI_${i}`);
+                    const hubITIName = hubSelect && hubSelect.selectedOptions[0] ? hubSelect.selectedOptions[0].text : '';
                     const cluster = {
-                        hubITI: document.getElementById(`${prefix}hubITI_${i}`)?.value || '',
+                        hubITI: hubITIName !== 'Select Hub ITI' ? hubITIName : '',
+                        hubITIIndex: hubSelect ? hubSelect.value : '',
                         spokes: []
                     };
                     
@@ -1033,6 +1189,22 @@
             data.scFormed = scFormed ? scFormed.value : '';
             
             data.scFormationDate = document.getElementById(prefix + 'scFormationDate')?.value || '';
+            
+            // MoM file info
+            if (prefix === '') {
+                data.scMoMFile = uploadedMoMFile ? {
+                    name: uploadedMoMFile.name,
+                    size: uploadedMoMFile.size,
+                    type: uploadedMoMFile.type
+                } : (savedFormData?.scMoMFile || null);
+            } else {
+                data.scMoMFile = editUploadedMoMFile ? {
+                    name: editUploadedMoMFile.name,
+                    size: editUploadedMoMFile.size,
+                    type: editUploadedMoMFile.type
+                } : (savedFormData?.scMoMFile || null);
+            }
+            
             data.bidSelectionStage = document.getElementById(prefix + 'bidSelectionStage')?.value || '';
             
             return data;
@@ -1086,6 +1258,16 @@
                 document.getElementById('view_scFormationDate').textContent = savedFormData.scFormationDate;
             } else {
                 document.getElementById('view_scDateField').classList.add('hidden');
+            }
+            
+            // MoM file display
+            if (savedFormData.scFormed === 'yes' && savedFormData.scMoMFile) {
+                document.getElementById('view_scMoMField').classList.remove('hidden');
+                document.getElementById('view_scMoMFile').innerHTML = `
+                    <i class="fas fa-file-alt"></i> ${savedFormData.scMoMFile.name}
+                `;
+            } else {
+                document.getElementById('view_scMoMField').classList.add('hidden');
             }
             
             document.getElementById('view_bidSelectionStage').textContent = bidStageLabels[savedFormData.bidSelectionStage] || '-';
@@ -1148,6 +1330,19 @@
                 document.getElementById('edit_scFormationDate').value = savedFormData.scFormationDate;
             }
             
+            // Display existing MoM file in edit form
+            if (savedFormData.scMoMFile) {
+                const displayElement = document.getElementById('edit_scMoMFileName');
+                displayElement.innerHTML = `
+                    <i class="fas fa-file-alt"></i>
+                    <span>${savedFormData.scMoMFile.name}</span>
+                    <button type="button" class="remove-file" onclick="removeFile('edit_scMoMUpload', 'edit_scMoMFileName')" title="Remove file">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                displayElement.classList.add('show');
+            }
+            
             if (savedFormData.bidSelectionStage) {
                 document.getElementById('edit_bidSelectionStage').value = savedFormData.bidSelectionStage;
             }
@@ -1184,12 +1379,89 @@
         function toggleSCDate() {
             const scFormed = document.querySelector('input[name="scFormed"]:checked');
             const dateContainer = document.getElementById('scDateContainer');
+            const momContainer = document.getElementById('scMoMContainer');
             
             if (scFormed && scFormed.value === 'yes') {
                 dateContainer.classList.remove('hidden');
+                momContainer.classList.remove('hidden');
             } else {
                 dateContainer.classList.add('hidden');
+                momContainer.classList.add('hidden');
                 document.getElementById('scFormationDate').value = '';
+                document.getElementById('scMoMUpload').value = '';
+                document.getElementById('scMoMFileName').classList.remove('show');
+                document.getElementById('scMoMFileName').innerHTML = '';
+                uploadedMoMFile = null;
+            }
+        }
+
+        // File upload handling
+        let uploadedMoMFile = null;
+        let editUploadedMoMFile = null;
+
+        function handleFileUpload(input, displayId) {
+            const displayElement = document.getElementById(displayId);
+            const file = input.files[0];
+            
+            if (!file) {
+                displayElement.classList.remove('show');
+                displayElement.innerHTML = '';
+                return;
+            }
+            
+            // Validate file type
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            const allowedExtensions = ['.pdf', '.doc', '.docx'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedExtensions.includes(fileExtension)) {
+                alert('Invalid file type. Please upload PDF, DOC, or DOCX files only.');
+                input.value = '';
+                displayElement.classList.remove('show');
+                displayElement.innerHTML = '';
+                return;
+            }
+            
+            // Validate file size (max 10MB)
+            const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+            if (file.size > maxSize) {
+                alert('File size exceeds 10MB limit. Please upload a smaller file.');
+                input.value = '';
+                displayElement.classList.remove('show');
+                displayElement.innerHTML = '';
+                return;
+            }
+            
+            // Store file reference based on which input
+            if (input.id === 'scMoMUpload') {
+                uploadedMoMFile = file;
+            } else if (input.id === 'edit_scMoMUpload') {
+                editUploadedMoMFile = file;
+            }
+            
+            // Display file name with remove button
+            displayElement.innerHTML = `
+                <i class="fas fa-file-alt"></i>
+                <span>${file.name}</span>
+                <button type="button" class="remove-file" onclick="removeFile('${input.id}', '${displayId}')" title="Remove file">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            displayElement.classList.add('show');
+        }
+
+        function removeFile(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const displayElement = document.getElementById(displayId);
+            
+            input.value = '';
+            displayElement.classList.remove('show');
+            displayElement.innerHTML = '';
+            
+            if (inputId === 'scMoMUpload') {
+                uploadedMoMFile = null;
+            } else if (inputId === 'edit_scMoMUpload') {
+                editUploadedMoMFile = null;
             }
         }
 
@@ -1207,7 +1479,10 @@
                     <h4><i class="fas fa-layer-group"></i> Cluster ${i}</h4>
                     <div class="form-group">
                         <label for="hubITI_${i}"><i class="fas fa-building"></i> Hub ITI:</label>
-                        <input type="text" id="hubITI_${i}" name="hubITI_${i}" class="form-control" placeholder="Enter Hub ITI Name">
+                        <select id="hubITI_${i}" name="hubITI_${i}" class="form-control" onchange="onHubITIChange(${i})">
+                            <option value="">Select Hub ITI</option>
+                            ${itiDatabase.map((iti, idx) => `<option value="${idx}">${iti.name}</option>`).join('')}
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="numSpokes_${i}"><i class="fas fa-hashtag"></i> Number of Spoke ITIs:</label>
@@ -1219,6 +1494,19 @@
             }
         }
 
+        function onHubITIChange(clusterId) {
+            // Regenerate spoke ITIs to exclude the selected hub ITI
+            const numSpokes = parseInt(document.getElementById(`numSpokes_${clusterId}`).value);
+            if (!isNaN(numSpokes) && numSpokes > 0) {
+                generateSpokeITIs(clusterId);
+            }
+        }
+
+        function getSelectedHubITI(clusterId) {
+            const hubSelect = document.getElementById(`hubITI_${clusterId}`);
+            return hubSelect ? hubSelect.value : '';
+        }
+
         function generateSpokeITIs(clusterId) {
             const numSpokes = parseInt(document.getElementById(`numSpokes_${clusterId}`).value);
             const container = document.getElementById(`spokesContainer_${clusterId}`);
@@ -1226,9 +1514,21 @@
 
             if (isNaN(numSpokes) || numSpokes <= 0) return;
 
+            // Get the selected Hub ITI index to exclude from spoke options
+            const selectedHubIndex = getSelectedHubITI(clusterId);
+
             for (let i = 1; i <= numSpokes; i++) {
                 const spokeDiv = document.createElement('div');
                 spokeDiv.className = 'iti-item';
+                
+                // Filter out the selected Hub ITI from the options
+                const itiOptions = itiDatabase.map((iti, idx) => {
+                    if (selectedHubIndex !== '' && idx === parseInt(selectedHubIndex)) {
+                        return ''; // Exclude hub ITI from spoke options
+                    }
+                    return `<option value="${idx}">${iti.name}</option>`;
+                }).join('');
+                
                 spokeDiv.innerHTML = `
                     <h5><i class="fas fa-university"></i> Spoke ITI ${i}</h5>
                     <div class="row-2col">
@@ -1236,7 +1536,7 @@
                             <label for="itiName_${clusterId}_${i}">ITI Name:</label>
                             <select id="itiName_${clusterId}_${i}" name="itiName_${clusterId}_${i}" class="form-control" onchange="populateITIDetails(${clusterId}, ${i})">
                                 <option value="">Select ITI</option>
-                                ${itiDatabase.map((iti, idx) => `<option value="${idx}">${iti.name}</option>`).join('')}
+                                ${itiOptions}
                             </select>
                         </div>
                         <div class="form-group">
@@ -1293,12 +1593,19 @@
         function toggleEditSCDate() {
             const scFormed = document.querySelector('input[name="edit_scFormed"]:checked');
             const dateContainer = document.getElementById('editScDateContainer');
+            const momContainer = document.getElementById('editScMoMContainer');
             
             if (scFormed && scFormed.value === 'yes') {
                 dateContainer.classList.remove('hidden');
+                momContainer.classList.remove('hidden');
             } else {
                 dateContainer.classList.add('hidden');
+                momContainer.classList.add('hidden');
                 document.getElementById('edit_scFormationDate').value = '';
+                document.getElementById('edit_scMoMUpload').value = '';
+                document.getElementById('edit_scMoMFileName').classList.remove('show');
+                document.getElementById('edit_scMoMFileName').innerHTML = '';
+                editUploadedMoMFile = null;
             }
         }
 
@@ -1316,7 +1623,10 @@
                     <h4><i class="fas fa-layer-group"></i> Cluster ${i}</h4>
                     <div class="form-group">
                         <label for="edit_hubITI_${i}"><i class="fas fa-building"></i> Hub ITI:</label>
-                        <input type="text" id="edit_hubITI_${i}" name="edit_hubITI_${i}" class="form-control" placeholder="Enter Hub ITI Name">
+                        <select id="edit_hubITI_${i}" name="edit_hubITI_${i}" class="form-control" onchange="onEditHubITIChange(${i})">
+                            <option value="">Select Hub ITI</option>
+                            ${itiDatabase.map((iti, idx) => `<option value="${idx}">${iti.name}</option>`).join('')}
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="edit_numSpokes_${i}"><i class="fas fa-hashtag"></i> Number of Spoke ITIs:</label>
@@ -1328,6 +1638,19 @@
             }
         }
 
+        function onEditHubITIChange(clusterId) {
+            // Regenerate spoke ITIs to exclude the selected hub ITI
+            const numSpokes = parseInt(document.getElementById(`edit_numSpokes_${clusterId}`).value);
+            if (!isNaN(numSpokes) && numSpokes > 0) {
+                generateEditSpokeITIs(clusterId);
+            }
+        }
+
+        function getSelectedEditHubITI(clusterId) {
+            const hubSelect = document.getElementById(`edit_hubITI_${clusterId}`);
+            return hubSelect ? hubSelect.value : '';
+        }
+
         function generateEditSpokeITIs(clusterId) {
             const numSpokes = parseInt(document.getElementById(`edit_numSpokes_${clusterId}`).value);
             const container = document.getElementById(`edit_spokesContainer_${clusterId}`);
@@ -1335,9 +1658,21 @@
 
             if (isNaN(numSpokes) || numSpokes <= 0) return;
 
+            // Get the selected Hub ITI index to exclude from spoke options
+            const selectedHubIndex = getSelectedEditHubITI(clusterId);
+
             for (let i = 1; i <= numSpokes; i++) {
                 const spokeDiv = document.createElement('div');
                 spokeDiv.className = 'iti-item';
+                
+                // Filter out the selected Hub ITI from the options
+                const itiOptions = itiDatabase.map((iti, idx) => {
+                    if (selectedHubIndex !== '' && idx === parseInt(selectedHubIndex)) {
+                        return ''; // Exclude hub ITI from spoke options
+                    }
+                    return `<option value="${idx}">${iti.name}</option>`;
+                }).join('');
+                
                 spokeDiv.innerHTML = `
                     <h5><i class="fas fa-university"></i> Spoke ITI ${i}</h5>
                     <div class="row-2col">
@@ -1345,7 +1680,7 @@
                             <label for="edit_itiName_${clusterId}_${i}">ITI Name:</label>
                             <select id="edit_itiName_${clusterId}_${i}" name="edit_itiName_${clusterId}_${i}" class="form-control" onchange="populateEditITIDetails(${clusterId}, ${i})">
                                 <option value="">Select ITI</option>
-                                ${itiDatabase.map((iti, idx) => `<option value="${idx}">${iti.name}</option>`).join('')}
+                                ${itiOptions}
                             </select>
                         </div>
                         <div class="form-group">
@@ -1383,6 +1718,31 @@
             document.getElementById(`edit_itiMISCode_${clusterId}_${spokeId}`).value = iti.misCode;
             document.getElementById(`edit_district_${clusterId}_${spokeId}`).value = iti.district;
             document.getElementById(`edit_itiAddress_${clusterId}_${spokeId}`).value = iti.address;
+        }
+    </script>
+
+    <script>
+        // Check if user is logged in and display state name
+        document.addEventListener('DOMContentLoaded', function() {
+            const userState = sessionStorage.getItem('userState');
+            const userEmail = sessionStorage.getItem('userEmail');
+            
+            if (!userState || !userEmail) {
+                // Not logged in, redirect to login page
+                alert('Please login to access the dashboard.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Display the logged in state
+            document.getElementById('loggedInState').textContent = userState;
+        });
+        
+        // Logout function
+        function logout() {
+            sessionStorage.removeItem('userState');
+            sessionStorage.removeItem('userEmail');
+            window.location.href = 'login.html';
         }
     </script>
 </body>

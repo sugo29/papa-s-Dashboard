@@ -26,9 +26,9 @@
         /* HEADER */
         header {
             background: linear-gradient(90deg, #003973, #005aa7);
-            padding: 40px 30px;
+            padding: 15px 30px;
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             color: #ffffff;
             position: sticky;
@@ -36,6 +36,40 @@
             z-index: 100;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 100%;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            height: 55px;
+            width: auto;
+            border-radius: 5px;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            margin-left: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .header-title span {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 3px;
         }
 
         header nav a {
@@ -125,6 +159,97 @@
             background-color: rgba(255,255,255,0.15);
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        /* BANNER CAROUSEL SECTION */
+        .banner-section {
+            background: linear-gradient(135deg, #003973 0%, #005aa7 50%, #003973 100%);
+            padding: 40px 0;
+            overflow: hidden;
+        }
+
+        .banner-title {
+            text-align: center;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .banner-title span {
+            background: linear-gradient(90deg, #ffffff, #c2e0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .banner-carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .banner-track {
+            display: flex;
+            animation: scroll 30s linear infinite;
+            width: calc(350px * 22);
+        }
+
+        .banner-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-350px * 11));
+            }
+        }
+
+        .banner-slide {
+            flex: 0 0 350px;
+            height: 220px;
+            padding: 0 10px;
+        }
+
+        .banner-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .banner-slide img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .banner-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .banner-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .banner-indicator.active,
+        .banner-indicator:hover {
+            background-color: #ffffff;
+            transform: scale(1.2);
         }
 
         /* SCHEME DETAILS SECTION */
@@ -274,10 +399,27 @@
         /* FOOTER */
         footer {
             text-align: center;
-            padding: 30px;
+            padding: 40px 30px;
             background-color: #003973;
             font-size: 14px;
             color: #d1d5db;
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo {
+            height: 60px;
+            width: auto;
+            border-radius: 5px;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         footer p {
@@ -300,21 +442,380 @@
             text-decoration: underline;
         }
 
+        /* RESOURCES SECTION */
+        .resources-section {
+            padding: 60px 60px;
+            background-color: #ffffff;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .resources-section .section-title {
+            font-size: 28px;
+            margin-bottom: 40px;
+        }
+
+        .resources-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .resource-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e6f3ff 100%);
+            border: 2px solid #005aa7;
+            border-radius: 12px;
+            padding: 25px 30px;
+            min-width: 160px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #003973;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .resource-item:hover {
+            background: linear-gradient(135deg, #005aa7 0%, #003973 100%);
+            color: #ffffff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 90, 167, 0.3);
+        }
+
+        .resource-item i {
+            font-size: 32px;
+            margin-bottom: 12px;
+            color: #005aa7;
+            transition: color 0.3s ease;
+        }
+
+        .resource-item:hover i {
+            color: #ffffff;
+        }
+
+        .resource-item span {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* FAQ MODAL */
+        .faq-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            overflow: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .faq-modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .faq-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: linear-gradient(90deg, #003973, #005aa7);
+            border-radius: 12px 12px 0 0;
+            color: #ffffff;
+        }
+
+        .faq-modal-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .faq-modal-close {
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #ffffff;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        .faq-modal-close:hover {
+            color: #c2e0ff;
+        }
+
+        .faq-modal-body {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .faq-modal-body .faq-container {
+            max-width: 100%;
+        }
+
+        /* IMAGES MODAL */
+        .media-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .media-modal-content {
+            background-color: #ffffff;
+            margin: 3% auto;
+            width: 95%;
+            max-width: 1200px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .media-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: linear-gradient(90deg, #003973, #005aa7);
+            border-radius: 12px 12px 0 0;
+            color: #ffffff;
+        }
+
+        .media-modal-header h2 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .media-modal-close {
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #ffffff;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        .media-modal-close:hover {
+            color: #c2e0ff;
+        }
+
+        .media-modal-body {
+            padding: 30px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Image Gallery Grid */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 57, 115, 0.9));
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Video Gallery */
+        .video-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .video-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background: #f8fafc;
+        }
+
+        .video-item video {
+            width: 100%;
+            display: block;
+        }
+
+        .video-item-title {
+            padding: 15px 20px;
+            background: linear-gradient(90deg, #003973, #005aa7);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        /* Image Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .lightbox-content img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            color: #c2e0ff;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 50px;
+            color: white;
+            cursor: pointer;
+            padding: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .lightbox-nav:hover {
+            color: #c2e0ff;
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        .lightbox-caption {
+            color: white;
+            margin-top: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 900px) {
             header {
-                padding: 16px 30px;
+                padding: 12px 20px;
                 flex-direction: column;
                 gap: 15px;
+            }
+
+            .header-logos {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .header-logo {
+                height: 45px;
+            }
+
+            .header-title h1 {
+                font-size: 18px;
+            }
+
+            .header-title span {
+                font-size: 10px;
             }
             
             header nav {
                 display: flex;
-                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
             }
             
             header nav a {
-                margin-left: 0;
+                margin: 0;
+                font-size: 14px;
             }
 
             .hero {
@@ -329,7 +830,7 @@
                 font-size: 18px;
             }
 
-            .scheme-details, .faq-section {
+            .scheme-details {
                 padding: 60px 30px;
             }
             
@@ -352,6 +853,15 @@
             .details-container {
                 grid-template-columns: 1fr;
             }
+
+            .resources-grid {
+                gap: 15px;
+            }
+
+            .resource-item {
+                min-width: 140px;
+                padding: 20px 25px;
+            }
         }
     </style>
 </head>
@@ -359,10 +869,19 @@
 
     <!-- HEADER -->
     <header>
+        <div class="header-logos">
+            <img src="Images and Videos/Logo1.jpeg" alt="Government of India" class="header-logo">
+            <img src="Images and Videos/Logo2.jpeg" alt="PM SETU" class="header-logo">
+            <img src="Images and Videos/Logo3.jpeg" alt="Ministry Logo" class="header-logo">
+            <div class="header-title">
+                <h1>PM SETU</h1>
+                <span>Pradhan Mantri Skill Enhancement & Training Upgradation</span>
+            </div>
+        </div>
         <nav>
             <a href="#"><i class="fas fa-home"></i> Home</a>
             <a href="#scheme-details"><i class="fas fa-info-circle"></i> Scheme Details</a>
-            <a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a>
+            <a href="#resources"><i class="fas fa-folder-open"></i> Resources</a>
             <a href="#"><i class="fas fa-envelope"></i> Contact</a>
         </nav>
     </header>
@@ -383,6 +902,83 @@
                 <button class="btn btn-secondary" onclick="window.location.href='loginc.html'">
                     <i class="fas fa-building"></i> Login as Centre
                 </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANNER CAROUSEL SECTION -->
+    <section class="banner-section">
+        <h3 class="banner-title"><span>PM SETU in Action</span></h3>
+        <div class="banner-carousel">
+            <div class="banner-track">
+                <!-- First set of images -->
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage1.jpeg" alt="PM SETU Image 1">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage2.jpeg" alt="PM SETU Image 2">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage3.jpeg" alt="PM SETU Image 3">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage4.jpeg" alt="PM SETU Image 4">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage5.jpeg" alt="PM SETU Image 5">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage6.jpeg" alt="PM SETU Image 6">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage7.jpeg" alt="PM SETU Image 7">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage8.jpeg" alt="PM SETU Image 8">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage9.jpeg" alt="PM SETU Image 9">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage10.jpeg" alt="PM SETU Image 10">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage11.jpeg" alt="PM SETU Image 11">
+                </div>
+                <!-- Duplicate set for seamless loop -->
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage1.jpeg" alt="PM SETU Image 1">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage2.jpeg" alt="PM SETU Image 2">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage3.jpeg" alt="PM SETU Image 3">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage4.jpeg" alt="PM SETU Image 4">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage5.jpeg" alt="PM SETU Image 5">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage6.jpeg" alt="PM SETU Image 6">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage7.jpeg" alt="PM SETU Image 7">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage8.jpeg" alt="PM SETU Image 8">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage9.jpeg" alt="PM SETU Image 9">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage10.jpeg" alt="PM SETU Image 10">
+                </div>
+                <div class="banner-slide">
+                    <img src="Images and Videos/PMSetuImage11.jpeg" alt="PM SETU Image 11">
+                </div>
             </div>
         </div>
     </section>
@@ -470,75 +1066,212 @@
         </div>
     </section>
 
-    <!-- FAQ SECTION -->
-    <section class="faq-section" id="faq">
-        <h2 class="section-title">Frequently Asked Questions</h2>
+    <!-- RESOURCES SECTION -->
+    <section class="resources-section" id="resources">
+        <h2 class="section-title">Resources & Downloads</h2>
         
-        <div class="faq-container">
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(0)">
-                    <span>What is the full form of PM SETU?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>PM SETU stands for "Pradhan Mantri Skill Enhancement and Training Upgrade" scheme. It is a flagship initiative aimed at modernizing Industrial Training Institutes (ITIs) across India.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(1)">
-                    <span>Who is eligible to benefit from the PM SETU scheme?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>All Industrial Training Institutes (ITIs) recognized by NCVT are eligible for upgradation under this scheme. Additionally, students enrolled in these ITIs, instructors, and industry partners collaborating with ITIs are key beneficiaries.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(2)">
-                    <span>How can an ITI apply for PM SETU benefits?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>ITIs can apply through the official PM SETU portal. The application process involves submitting institutional details, current infrastructure status, proposed upgradation plan, and necessary documentation as specified in the scheme guidelines.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(3)">
-                    <span>What types of infrastructure upgrades are covered?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>The scheme covers upgrades to workshops, laboratories, smart classrooms, digital infrastructure, library resources, hostel facilities (where applicable), and installation of modern equipment aligned with industry requirements.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(4)">
-                    <span>Is there any financial assistance for students?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>While the primary focus is on institutional upgradation, the scheme facilitates better placement opportunities and industry exposure for students. Some components may include stipends for apprenticeships and special industry-sponsored scholarships.</p>
-                </div>
-            </div>
-            
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFAQ(5)">
-                    <span>How does PM SETU promote industry collaboration?</span>
-                    <i class="fas fa-chevron-down faq-icon"></i>
-                </div>
-                <div class="faq-answer">
-                    <p>The scheme mandates and facilitates MoUs between ITIs and industry partners. This includes guest lectures, curriculum input, equipment sponsorship, on-the-job training, apprenticeship opportunities, and placement support.</p>
-                </div>
-            </div>
+        <div class="resources-grid">
+            <a href="pm-setu-guidelines.pdf" target="_blank" class="resource-item">
+                <i class="fas fa-book"></i>
+                <span>PM SETU Guidelines</span>
+            </a>
+            <a href="fund-flow-guidelines.pdf" target="_blank" class="resource-item">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Fund Flow Guidelines</span>
+            </a>
+            <a href="model-rfps.pdf" target="_blank" class="resource-item">
+                <i class="fas fa-file-contract"></i>
+                <span>Model RFPs</span>
+            </a>
+            <a href="presentations.pdf" target="_blank" class="resource-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Presentations</span>
+            </a>
+            <a href="#" class="resource-item" onclick="openImagesModal(event)">
+                <i class="fas fa-images"></i>
+                <span>Images</span>
+            </a>
+            <a href="#" class="resource-item" onclick="openVideosModal(event)">
+                <i class="fas fa-video"></i>
+                <span>Videos</span>
+            </a>
+            <a href="#" class="resource-item" onclick="openFAQModal(event)">
+                <i class="fas fa-question-circle"></i>
+                <span>FAQs</span>
+            </a>
         </div>
     </section>
 
+    <!-- FAQ MODAL -->
+    <div id="faqModal" class="faq-modal">
+        <div class="faq-modal-content">
+            <div class="faq-modal-header">
+                <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                <span class="faq-modal-close" onclick="closeFAQModal()">&times;</span>
+            </div>
+            <div class="faq-modal-body">
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(0)">
+                            <span>What is the full form of PM SETU?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>PM SETU stands for "Pradhan Mantri Skill Enhancement and Training Upgrade" scheme. It is a flagship initiative aimed at modernizing Industrial Training Institutes (ITIs) across India.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(1)">
+                            <span>Who is eligible to benefit from the PM SETU scheme?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>All Industrial Training Institutes (ITIs) recognized by NCVT are eligible for upgradation under this scheme. Additionally, students enrolled in these ITIs, instructors, and industry partners collaborating with ITIs are key beneficiaries.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(2)">
+                            <span>How can an ITI apply for PM SETU benefits?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>ITIs can apply through the official PM SETU portal. The application process involves submitting institutional details, current infrastructure status, proposed upgradation plan, and necessary documentation as specified in the scheme guidelines.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(3)">
+                            <span>What types of infrastructure upgrades are covered?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The scheme covers upgrades to workshops, laboratories, smart classrooms, digital infrastructure, library resources, hostel facilities (where applicable), and installation of modern equipment aligned with industry requirements.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(4)">
+                            <span>Is there any financial assistance for students?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>While the primary focus is on institutional upgradation, the scheme facilitates better placement opportunities and industry exposure for students. Some components may include stipends for apprenticeships and special industry-sponsored scholarships.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(5)">
+                            <span>How does PM SETU promote industry collaboration?</span>
+                            <i class="fas fa-chevron-down faq-icon"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The scheme mandates and facilitates MoUs between ITIs and industry partners. This includes guest lectures, curriculum input, equipment sponsorship, on-the-job training, apprenticeship opportunities, and placement support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGES MODAL -->
+    <div id="imagesModal" class="media-modal">
+        <div class="media-modal-content">
+            <div class="media-modal-header">
+                <h2><i class="fas fa-images"></i> PM SETU Image Gallery</h2>
+                <span class="media-modal-close" onclick="closeImagesModal()">&times;</span>
+            </div>
+            <div class="media-modal-body">
+                <div class="image-gallery">
+                    <div class="gallery-item" onclick="openLightbox(0)">
+                        <img src="Images and Videos/PMSetuImage1.jpeg" alt="PM SETU Image 1">
+                        <div class="gallery-item-overlay">PM SETU Image 1</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(1)">
+                        <img src="Images and Videos/PMSetuImage2.jpeg" alt="PM SETU Image 2">
+                        <div class="gallery-item-overlay">PM SETU Image 2</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(2)">
+                        <img src="Images and Videos/PMSetuImage3.jpeg" alt="PM SETU Image 3">
+                        <div class="gallery-item-overlay">PM SETU Image 3</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(3)">
+                        <img src="Images and Videos/PMSetuImage4.jpeg" alt="PM SETU Image 4">
+                        <div class="gallery-item-overlay">PM SETU Image 4</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(4)">
+                        <img src="Images and Videos/PMSetuImage5.jpeg" alt="PM SETU Image 5">
+                        <div class="gallery-item-overlay">PM SETU Image 5</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(5)">
+                        <img src="Images and Videos/PMSetuImage6.jpeg" alt="PM SETU Image 6">
+                        <div class="gallery-item-overlay">PM SETU Image 6</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(6)">
+                        <img src="Images and Videos/PMSetuImage7.jpeg" alt="PM SETU Image 7">
+                        <div class="gallery-item-overlay">PM SETU Image 7</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(7)">
+                        <img src="Images and Videos/PMSetuImage8.jpeg" alt="PM SETU Image 8">
+                        <div class="gallery-item-overlay">PM SETU Image 8</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(8)">
+                        <img src="Images and Videos/PMSetuImage9.jpeg" alt="PM SETU Image 9">
+                        <div class="gallery-item-overlay">PM SETU Image 9</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(9)">
+                        <img src="Images and Videos/PMSetuImage10.jpeg" alt="PM SETU Image 10">
+                        <div class="gallery-item-overlay">PM SETU Image 10</div>
+                    </div>
+                    <div class="gallery-item" onclick="openLightbox(10)">
+                        <img src="Images and Videos/PMSetuImage11.jpeg" alt="PM SETU Image 11">
+                        <div class="gallery-item-overlay">PM SETU Image 11</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIDEOS MODAL -->
+    <div id="videosModal" class="media-modal">
+        <div class="media-modal-content">
+            <div class="media-modal-header">
+                <h2><i class="fas fa-video"></i> PM SETU Videos</h2>
+                <span class="media-modal-close" onclick="closeVideosModal()">&times;</span>
+            </div>
+            <div class="media-modal-body">
+                <div class="video-gallery">
+                    <div class="video-item">
+                        <div class="video-item-title"><i class="fas fa-play-circle"></i> PM SETU Overview Video</div>
+                        <video controls>
+                            <source src="Images and Videos/PMSETU_Video1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE LIGHTBOX -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <span class="lightbox-nav lightbox-prev" onclick="changeLightboxImage(-1)"><i class="fas fa-chevron-left"></i></span>
+        <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="">
+            <div id="lightboxCaption" class="lightbox-caption"></div>
+        </div>
+        <span class="lightbox-nav lightbox-next" onclick="changeLightboxImage(1)"><i class="fas fa-chevron-right"></i></span>
+    </div>
+
     <!-- FOOTER -->
     <footer>
+        <div class="footer-logos">
+            <img src="Images and Videos/Logo1.jpeg" alt="Government of India" class="footer-logo">
+            <img src="Images and Videos/Logo2.jpeg" alt="PM SETU" class="footer-logo">
+            <img src="Images and Videos/Logo3.jpeg" alt="Ministry Logo" class="footer-logo">
+        </div>
         <p>© 2025 PM SETU | Government of India. All rights reserved.</p>
         <p>Ministry of Skill Development and Entrepreneurship</p>
         <div class="footer-links">
@@ -571,10 +1304,144 @@
             });
         }
         
-        // Initialize first FAQ as open
-        document.addEventListener('DOMContentLoaded', function() {
-            toggleFAQ(0);
+        // Open FAQ Modal
+        function openFAQModal(event) {
+            event.preventDefault();
+            const modal = document.getElementById('faqModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            // Open the first FAQ when modal opens
+            setTimeout(() => {
+                const faqItems = document.querySelectorAll('.faq-item');
+                faqItems.forEach((item) => {
+                    item.querySelector('.faq-question').classList.remove('active');
+                    item.querySelector('.faq-answer').classList.remove('open');
+                });
+                toggleFAQ(0);
+            }, 100);
+        }
+        
+        // Close FAQ Modal
+        function closeFAQModal() {
+            const modal = document.getElementById('faqModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const faqModal = document.getElementById('faqModal');
+            const imagesModal = document.getElementById('imagesModal');
+            const videosModal = document.getElementById('videosModal');
+            const lightbox = document.getElementById('lightbox');
+            
+            if (event.target === faqModal) {
+                closeFAQModal();
+            }
+            if (event.target === imagesModal) {
+                closeImagesModal();
+            }
+            if (event.target === videosModal) {
+                closeVideosModal();
+            }
+            if (event.target === lightbox) {
+                closeLightbox();
+            }
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeFAQModal();
+                closeImagesModal();
+                closeVideosModal();
+                closeLightbox();
+            }
+            // Arrow key navigation for lightbox
+            if (document.getElementById('lightbox').style.display === 'block') {
+                if (event.key === 'ArrowLeft') {
+                    changeLightboxImage(-1);
+                } else if (event.key === 'ArrowRight') {
+                    changeLightboxImage(1);
+                }
+            }
         });
+        
+        // Images Modal Functions
+        function openImagesModal(event) {
+            event.preventDefault();
+            const modal = document.getElementById('imagesModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeImagesModal() {
+            const modal = document.getElementById('imagesModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Videos Modal Functions
+        function openVideosModal(event) {
+            event.preventDefault();
+            const modal = document.getElementById('videosModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeVideosModal() {
+            const modal = document.getElementById('videosModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Pause all videos when closing
+            const videos = modal.querySelectorAll('video');
+            videos.forEach(video => video.pause());
+        }
+        
+        // Lightbox Functions
+        const galleryImages = [
+            { src: 'Images and Videos/PMSetuImage1.jpeg', caption: 'PM SETU Image 1' },
+            { src: 'Images and Videos/PMSetuImage2.jpeg', caption: 'PM SETU Image 2' },
+            { src: 'Images and Videos/PMSetuImage3.jpeg', caption: 'PM SETU Image 3' },
+            { src: 'Images and Videos/PMSetuImage4.jpeg', caption: 'PM SETU Image 4' },
+            { src: 'Images and Videos/PMSetuImage5.jpeg', caption: 'PM SETU Image 5' },
+            { src: 'Images and Videos/PMSetuImage6.jpeg', caption: 'PM SETU Image 6' },
+            { src: 'Images and Videos/PMSetuImage7.jpeg', caption: 'PM SETU Image 7' },
+            { src: 'Images and Videos/PMSetuImage8.jpeg', caption: 'PM SETU Image 8' },
+            { src: 'Images and Videos/PMSetuImage9.jpeg', caption: 'PM SETU Image 9' },
+            { src: 'Images and Videos/PMSetuImage10.jpeg', caption: 'PM SETU Image 10' },
+            { src: 'Images and Videos/PMSetuImage11.jpeg', caption: 'PM SETU Image 11' }
+        ];
+        let currentImageIndex = 0;
+        
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxCaption = document.getElementById('lightboxCaption');
+            
+            lightboxImage.src = galleryImages[index].src;
+            lightboxCaption.textContent = galleryImages[index].caption;
+            lightbox.style.display = 'block';
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+        
+        function changeLightboxImage(direction) {
+            currentImageIndex += direction;
+            if (currentImageIndex >= galleryImages.length) {
+                currentImageIndex = 0;
+            } else if (currentImageIndex < 0) {
+                currentImageIndex = galleryImages.length - 1;
+            }
+            
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxCaption = document.getElementById('lightboxCaption');
+            lightboxImage.src = galleryImages[currentImageIndex].src;
+            lightboxCaption.textContent = galleryImages[currentImageIndex].caption;
+        }
         
         // Smooth scroll for navigation links
         document.querySelectorAll('header nav a').forEach(anchor => {
